@@ -1,5 +1,5 @@
 Simulador de Escalas – Emenda Constitucional 141 (Fim da 6x1): pacote do site
-Gerado em 10/11/2026 20:11 (motor 0.1.2, SHA-256 721e849398e64fd7…)
+Gerado em 11/11/2026 09:44 (motor 0.1.2, SHA-256 721e849398e64fd7…)
 
 O que é cada arquivo
 - index.html: o simulador inteiro (motor, telas e regras). É o único arquivo indispensável.
