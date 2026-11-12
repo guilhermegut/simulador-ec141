@@ -1,7 +1,7 @@
 'use strict';
 /* Service worker do simulador: guarda a página e as bibliotecas para abrir sem internet. Nenhum dado digitado passa por aqui:
    o cálculo e o rascunho ficam no navegador de quem usa. A cada nova publicação o nome do cache muda e o antigo é apagado. */
-const CACHE = "escalas-ec141-721e8493-mwc8f1xu";
+const CACHE = "escalas-ec141-721e8493-mwdlvv7h";
 const BASICO = ['./', 'index.html', 'manifest.webmanifest', 'icones/icone-192.png', 'icones/icone-512.png', 'icones/apple-touch-icon.png', 'icones/favicon-32.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(BASICO)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => {
