@@ -1,7 +1,7 @@
 {
-  "name": "Simulador de Escalas – Emenda Constitucional 141 (Fim da 6x1)",
+  "name": "Simulador da Emenda Constitucional 141 (Fim da 6x1)",
   "short_name": "Fim da 6x1",
-  "description": "Simulador de escalas e custos para a Emenda Constitucional 141/2026 (Fim da 6x1).",
+  "description": "Simulador de escalas para a Emenda Constitucional 141/2026 (Fim da 6x1).",
   "lang": "pt-BR",
   "start_url": "./",
   "scope": "./",

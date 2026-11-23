@@ -1,7 +1,7 @@
 'use strict';
 /* Service worker do simulador: guarda a página e as bibliotecas para abrir sem internet. Nenhum dado digitado passa por aqui:
    o cálculo e o rascunho ficam no navegador de quem usa. A cada nova publicação o nome do cache muda e o antigo é apagado. */
-const CACHE = "escalas-ec141-8c572e4d-mwm5sfz3";
+const CACHE = "escalas-ec141-v4-35fd58eb-mwtjbjq1";
 const BASICO = ['./', 'index.html', 'manifest.webmanifest', 'icones/icone-192.png', 'icones/icone-512.png', 'icones/apple-touch-icon.png', 'icones/favicon-32.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(BASICO)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => {
@@ -12,15 +12,7 @@ self.addEventListener('fetch', (e) => {
   const req = e.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
-  if (req.mode === 'navigate') {
-    // página: sempre a versão mais nova quando há rede; sem rede, a última guardada
-    e.respondWith(fetch(req).then((r) => guardar('index.html', r)).catch(() => caches.match('index.html')));
-    return;
-  }
-  if (url.origin === location.origin) {
-    e.respondWith(caches.match(req).then((c) => c || fetch(req).then((r) => guardar(req, r))));
-    return;
-  }
-  // bibliotecas e fontes de CDN: rede primeiro, cópia guardada se cair
+  if (req.mode === 'navigate') { e.respondWith(fetch(req).then((r) => guardar('index.html', r)).catch(() => caches.match('index.html'))); return; }
+  if (url.origin === location.origin) { e.respondWith(caches.match(req).then((c) => c || fetch(req).then((r) => guardar(req, r)))); return; }
   e.respondWith(fetch(req).then((r) => guardar(req, r)).catch(() => caches.match(req)));
 });
