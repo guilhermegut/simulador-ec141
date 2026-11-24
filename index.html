@@ -100,7 +100,9 @@ input:disabled { opacity: .45; }
 .chip { border: 1px solid var(--linha); background: var(--superficie); border-radius: 999px; padding: 7px 14px; cursor: pointer; font-size: 15px; font-weight: 500; min-height: 38px; }
 .chip[aria-pressed="true"] { background: var(--marca); border-color: var(--marca); color: #fff; }
 .chip.mini { padding: 4px 10px; font-size: 13px; min-height: 30px; }
-.chips.dias .chip { min-width: 48px; padding: 7px 8px; }
+/* D120: os sete dias numa linha só */
+.chips.dias { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 4px; }
+.chips.dias .chip { min-width: 0; padding: 7px 0; font-size: 14px; }
 .chip-select { width: auto !important; border-radius: 999px !important; padding: 7px 12px !important; font-size: 15px !important; min-height: 38px; }
 .chip-select.on { background: var(--marca); border-color: var(--marca); color: #fff; }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; cursor: pointer; }
@@ -198,14 +200,17 @@ table.grade tr.tot th, table.grade tr.tot td { border-top: 1px solid var(--linha
 
 .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #1d1d1f; color: #fff; padding: 10px 18px; border-radius: 999px; font-size: 14px; z-index: 50; max-width: calc(100vw - 32px); text-align: center; }
 
-/* ---------------------------------------------------------------- turnos (D117) */
-.turno-linha { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 6px 10px; align-items: center; padding: 4px 0; }
-.turno-linha .rot-t { grid-column: 1 / -1; font-size: 13px; font-weight: 600; color: var(--suave); }
-.turno-linha .sem-borda { justify-self: end; }
-@media (max-width: 1240px) and (min-width: 1000px), (max-width: 560px) {
-  .turno-linha { grid-template-columns: minmax(0, 1fr) auto; }
-  .turno-linha .horario { grid-column: 1 / -1; }
-}
+/* ---------------------------------------------------------------- turnos (D117; D120: grade com entrada, saída e pessoas) */
+.tt { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 68px; gap: 6px; align-items: center; }
+.tt.v { grid-template-columns: 18px minmax(0, 1fr) minmax(0, 1fr) 50px 20px; gap: 4px; }
+.tt-cab { font-size: 12.5px; font-weight: 600; color: var(--suave); margin-bottom: -2px; }
+.tt input[type="time"] { padding: 9px 2px 9px 8px; font-variant-numeric: tabular-nums; }
+.tt input[type="time"]::-webkit-calendar-picker-indicator { margin-left: 0; padding: 0; opacity: .55; }
+.tt input.num { text-align: center; padding-left: 4px; padding-right: 4px; }
+.tt .rot-t { font-size: 13px; font-weight: 650; color: var(--suave); }
+.tt .x { border: 0; background: transparent; color: var(--suave); font-size: 20px; line-height: 1; cursor: pointer; min-height: 36px; padding: 0; border-radius: 8px; }
+.tt .x:hover { color: var(--nok); background: var(--nok-bg); }
+.turno-linha .rot-t { font-size: 13px; font-weight: 600; color: var(--suave); }
 .pess { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--suave); }
 .pess input { width: 68px; text-align: center; }
 .mulheres { display: flex; flex-wrap: wrap; gap: 10px; }
@@ -264,6 +269,71 @@ button.cd { cursor: pointer; }
 .leg-cal .cd.fer::after { bottom: 3px; }
 .cal-dia { border: 1px solid var(--linha); border-radius: var(--raio); padding: 12px; display: grid; gap: 8px; }
 .cal-dia h5 { color: var(--tinta); }
+
+/* ---------------------------------------------------------------- resultado em lista comparável (D120) */
+.res { display: grid; gap: 20px; min-width: 0; position: relative; }
+.res.recalc > section { opacity: .5; transition: opacity .2s; }
+.recalc-t { position: sticky; top: 60px; z-index: 5; justify-self: center; background: var(--tinta); color: var(--papel); border-radius: 999px; padding: 4px 14px; font-size: 13px; font-weight: 600; margin-bottom: -12px; }
+.quadro { background: var(--superficie); border: 1px solid var(--linha); border-radius: var(--raio-g); box-shadow: var(--sombra); padding: 20px 0 8px; display: grid; min-width: 0; scroll-margin-top: 64px; }
+.q-cab { display: flex; flex-wrap: wrap; gap: 12px 20px; justify-content: space-between; align-items: flex-end; padding: 0 20px 14px; }
+.q-cab > div:first-child { display: grid; gap: 4px; max-width: 62ch; }
+.ls { display: grid; grid-template-columns: minmax(150px, 1.5fr) minmax(104px, 1fr) minmax(104px, 1fr) minmax(56px, .55fr) minmax(104px, .95fr) minmax(56px, .6fr) minmax(84px, .8fr) 14px; gap: 10px; align-items: center; padding: 12px 20px; }
+.ls-cab { font-size: 12.5px; font-weight: 600; color: var(--suave); border-bottom: 1px solid var(--linha); padding-top: 6px; padding-bottom: 8px; align-items: end; }
+.ls-cab small { display: block; font-weight: 500; font-size: 11.5px; }
+.gl { display: grid; scroll-margin-top: 64px; }
+.gl-t { font-size: 13px; font-weight: 650; color: var(--suave); padding: 14px 20px 4px; letter-spacing: 0; }
+.gl.g-nao .gl-t, .gl.g-nao .ls-nome b { color: var(--suave); }
+.gl-n { padding: 0 20px 4px; }
+details.lin { border-top: 1px solid var(--linha); scroll-margin-top: 64px; }
+.gl-t + details.lin, .gl-n + details.lin { border-top: 0; }
+details.lin > summary { list-style: none; cursor: pointer; }
+details.lin > summary::-webkit-details-marker { display: none; }
+details.lin > summary:hover { background: var(--leve); }
+details.lin[open] > summary { background: var(--marca-suave); }
+.ls-nome { display: grid; gap: 2px; min-width: 0; }
+.ls-nome b { font-weight: 600; font-size: 15px; line-height: 1.3; }
+.ls-nome small { font-size: 12.5px; }
+.ls-c { font-size: 14.5px; min-width: 0; font-variant-numeric: tabular-nums; }
+.ls-e { display: grid; justify-items: start; gap: 2px; }
+.ls-e .pill { font-size: 13px; padding: 3px 9px; line-height: 1.25; border-radius: 10px; max-width: 100%; }
+.cert-c { font-size: 11.5px; color: var(--suave); }
+.ls-ch { width: 9px; height: 9px; border-right: 2px solid var(--suave); border-bottom: 2px solid var(--suave); transform: rotate(-45deg); transition: transform .15s; justify-self: center; }
+details.lin[open] .ls-ch { transform: rotate(45deg); }
+.lc { display: grid; gap: 14px; padding: 14px 20px 20px; border-top: 1px solid var(--linha); background: var(--superficie); }
+.lin-hoje > summary { background: var(--leve); }
+.ok-t { color: var(--ok); font-weight: 600; }
+.nok-t { color: var(--nok); font-weight: 600; }
+.fm .fm-corpo { display: grid; gap: 10px; padding-top: 10px; }
+table.tfm { border-collapse: collapse; font-size: 13.5px; width: 100%; font-variant-numeric: tabular-nums; }
+table.tfm th, table.tfm td { padding: 6px 8px; text-align: left; border-bottom: 1px solid var(--linha); vertical-align: top; }
+table.tfm thead th { font-size: 12.5px; color: var(--suave); font-weight: 600; }
+table.tfm tbody th { font-weight: 500; white-space: nowrap; }
+table.tfm small { display: inline; font-size: 11.5px; }
+table.tfp th, table.tfp td { text-align: center; padding: 4px 6px; }
+table.tfp th[scope="row"] { text-align: left; }
+table.tfp thead small { display: block; }
+td.f-nok { background: var(--nok-bg); color: var(--nok); font-weight: 700; }
+td.f-med { background: var(--pend-bg); color: var(--pend); font-weight: 600; }
+@media (max-width: 1180px) and (min-width: 1000px), (max-width: 860px) {
+  .ls { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px 12px; position: relative; padding-right: 40px; }
+  .ls-cab { display: none; }
+  .ls-nome { grid-column: 1 / -1; }
+  .ls-ch { position: absolute; right: 18px; top: 18px; }
+  .ls-c { display: block; }
+  .ls-c::before { content: attr(data-rot); display: block; font-size: 11.5px; font-weight: 600; color: var(--suave); margin-bottom: 1px; }
+  .ls-e { justify-items: start; }
+}
+@media (max-width: 560px) { .q-cab, .gl-t, .gl-n { padding-left: 16px; padding-right: 16px; } .lc { padding-left: 16px; padding-right: 16px; } .ls { padding-left: 16px; padding-right: 40px; } .ls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* filhos de grade não podem alargar a página por causa de uma tabela larga (a tabela rola dentro da sua caixa) */
+.lc > *, .fm-corpo > *, .cal-corpo > *, .det-corpo > *, .detalhes, .fundamentos > *, .escala > * { min-width: 0; }
+@media (max-width: 560px) {
+  table.tfm:not(.tfp) thead { display: none; }
+  table.tfm:not(.tfp) tr { display: grid; grid-template-columns: minmax(0, 1.3fr) repeat(3, minmax(0, 1fr)); border-bottom: 1px solid var(--linha); padding: 6px 0; }
+  table.tfm:not(.tfp) th, table.tfm:not(.tfp) td { border: 0; padding: 1px 4px; }
+  table.tfm:not(.tfp) td:last-child { grid-column: 1 / -1; font-size: 13px; }
+  table.tfm:not(.tfp) td[data-rot]::after { content: " " attr(data-rot); font-size: 11.5px; color: var(--suave); font-weight: 400; }
+  table.tfm:not(.tfp) td small { display: none; }
+}
 
 </style>
 </head>
@@ -1394,6 +1464,9 @@ button.cd { cursor: pointer; }
       const per = { tipo: 'mes', ini: ini, fim: fim };
       const rot = NOMES_MES[m - 1] + '/' + a;
       let dServ = 0, fds = 0, tRel = 0, tComp = 0, rp = 0, rc = 0, domRep = 0, noc = 0, ferTrab = 0;
+      // D120: a média de repousos do § 2º só conta os dias em que os dois repousos já valem (desde 16/12/2026; D18): no mês da
+      // mudança, o mínimo é proporcional a esses dias (D17), e não depende de onde começa a janela simulada
+      let dXv = 0, fdsXv = 0, rpXv = 0;
       let limTeto = 0;
       const bNorma = !!(buscarInstrumento(ctx, emp, ['ampliacao_art7', 'media_par2'], ini) || {}).ok || !!(buscarInstrumento(ctx, emp, ['ampliacao_art7', 'media_par2'], fim) || {}).ok;
       for (let d = ini; d <= fim; d++) {
@@ -1402,15 +1475,17 @@ button.cd { cursor: pointer; }
           dServ++;
           if (diaSemana(d) >= 5) fds++;
           limTeto += T.tetoEf(d) * 60;
+          if (T.xv(d)) { dXv++; if (diaSemana(d) >= 5) fdsXv++; }
         }
         tRel += rel[i]; tComp += comp[i]; noc += noct[i];
         if (r.feriadoTrabalhado) ferTrab += civ[i];
-        if (RP.rep.has(d)) { rp++; if (diaSemana(d) === 6) domRep++; }
+        if (RP.rep.has(d)) { rp++; if (diaSemana(d) === 6) domRep++; if (T.xv(d)) rpXv++; }
         if (repCal.has(d)) rc++;
       }
       const totU = medidaRel ? tRel * U : tComp;
-      const minA = Math.ceil(2 * dServ / 7), minB = fds, minC = Math.ceil(8 * dServ / nd);
-      const mes = { a: a, m: m, ini: ini, fim: fim, dServ: dServ, rel: tRel, comp: tComp, repousos: rp, repCal: rc, minimos: { A: minA, B: minB, C: minC }, domingosRepouso: domRep, noturnas: noc, feriadoTrabalhado: ferTrab };
+      // critério A = Portaria MTE 2.041/2026, art. 4º, § 4º: o dobro dos dias do mês dividido por sete, arredondado para cima
+      const minA = Math.ceil(2 * dXv / 7 - 1e-9), minB = fdsXv, minC = Math.ceil(8 * dXv / nd - 1e-9);
+      const mes = { a: a, m: m, ini: ini, fim: fim, dServ: dServ, diasXv: dXv, rel: tRel, comp: tComp, repousos: rp, repousosXv: rpXv, repCal: rc, minimos: { A: minA, B: minB, C: minC }, domingosRepouso: domRep, noturnas: noc, feriadoTrabalhado: ferTrab };
       meses.push(mes);
       if (fim < ctx.h0 || ini > ctx.h1) continue;
 
@@ -1419,8 +1494,8 @@ button.cd { cursor: pointer; }
         const falhas = semFalhaR1.filter((p) => p.fim >= ini && p.ini <= fim);
         const base = 'CF, art. 7º, § 2º (Emenda Constitucional 141/2026 – Fim da 6x1); Portaria MTE 2.041/2026, art. 4º, §§ 1º e 3º';
         const crit = { A: minA, B: minB, C: minC };
-        const valores = { repousos: rp, A: minA, B: minB, C: minC, cumpreA: rp >= minA, cumpreB: rp >= minB, cumpreC: rp >= minC };
-        const conta = rot + ': ' + rp + ' repousos; mínimo de ' + minA + ' pelo critério A, ' + minB + ' pelo B e ' + minC + ' pelo C' + (dServ < nd ? ' (mês parcial: ' + dServ + ' dias em serviço)' : '') + '.';
+        const rp2 = rpXv, valores = { repousos: rp2, dias: dXv, A: minA, B: minB, C: minC, cumpreA: rp2 >= minA, cumpreB: rp2 >= minB, cumpreC: rp2 >= minC };
+        const conta = rot + ': ' + rp2 + ' repousos; mínimo de ' + minA + ' pelo critério A (2 × ' + dXv + ' dias ÷ 7, arredondado para cima), ' + minB + ' pelo B e ' + minC + ' pelo C' + (dXv < nd ? ' (mês parcial: ' + dXv + ' dias com os dois repousos em vigor e em serviço)' : '') + '.';
         if (!falhas.length) push({ regra: 'R2', periodo: per, status: 'na', porque: 'R1 cumprido em todas as semanas: o regime de média não é necessário.', base: base, conta: conta, valores: valores });
         else {
           const b = buscarInstrumento(ctx, emp, ['media_par2'], ini) || buscarInstrumento(ctx, emp, ['media_par2'], fim);
@@ -1429,9 +1504,9 @@ button.cd { cursor: pointer; }
             // D119: média de dois repousos por semana no mês-calendário, pelo critério do art. 4º, § 4º, da Portaria MTE
             // 2.041/2026 (critério A), com ao menos um repouso a cada seis dias seguidos de trabalho (art. 4º, § 3º; ver R3).
             // As janelas de 28 dias da D102 só entram com cfg.janela28.
-            const min = crit[cfg.criterioMedia], okM = rp >= min;
+            const min = crit[cfg.criterioMedia], okM = rp2 >= min;
             const j = cfg.janela28 && pRep && xv0 != null && fim >= xv0 ? piorJanela(ini, fim) : null, okJ = !j || j.folga >= 0, ok = okM && okJ;
-            const txtM = rp + ' repousos no mês; mínimo de ' + min + ' pelo critério ' + cfg.criterioMedia + (cfg.criterioMedia === 'A' ? ' (o dobro dos dias do mês dividido por sete, arredondado para cima)' : '');
+            const txtM = rp2 + ' repousos no mês; mínimo de ' + min + ' pelo critério ' + cfg.criterioMedia + (cfg.criterioMedia === 'A' ? ' (o dobro dos ' + dXv + ' dias' + (dXv < nd ? ' com os dois repousos em vigor' : ' do mês') + ' dividido por sete, arredondado para cima)' : '');
             const txtJ = j ? j.repousos + ' repousos para ' + j.exigidos + ' exigidos entre ' + fmtDataCurta(j.ini) + ' e ' + fmtData(j.fim) : '';
             push({ regra: 'R2', periodo: per, status: ok ? 'cumpre' : 'nao_cumpre', instrumento: 'media_par2', nota: 'cadastrado: ' + b.instr.nome,
               porque: txtM + '.' + (j ? (okJ ? ' Na janela de 28 dias mais apertada, ' : ' Faltam repousos numa janela de 28 dias: ') + txtJ + '.' : '') + ' A sequência de dias de trabalho sem repouso, de no máximo seis, se confere em R3.',
@@ -4012,9 +4087,21 @@ button.cd { cursor: pointer; }
     const r = avaliarM(montarEntrada(grupos, { inicio: inicio, fim: fim }, op || {}), op);
     const z0 = M.lerData(inicio), z1 = M.lerData(fim), n = z1 - z0 + 1;
     const dias = Array.from({ length: n }, () => ({ t: [], r: [] }));
-    const achados = [];
+    const achados = [], meses = new Map();
     for (const e of r.empregados) {
       const pelaMedia = semanaPelaMedia(e);   // como em resumir (D79)
+      // D120: folgas de cada mês contra o mínimo do art. 4º, § 4º, da Portaria MTE 2.041/2026, por pessoa. Situação: 's' duas
+      // folgas em todas as semanas (a média não é necessária), 'm' cumpre pela média com norma coletiva, 'b' abaixo do mínimo
+      // com norma, 'x' semana com uma folga só e sem norma coletiva de média
+      for (const m of e.meses || []) {
+        if (m.fim < z0 || m.ini > z1 || !m.diasXv) continue;
+        const k = m.a * 12 + m.m - 1;
+        if (!meses.has(k)) meses.set(k, { a: m.a, m: m.m, dias: m.diasXv, diasMes: m.fim - m.ini + 1, exigidas: m.minimos.A, pessoas: [] });
+        const a2 = e.achados.find((a) => a.regra === 'R2' && a.periodo && a.periodo.ini === m.ini);
+        const st = !a2 || a2.status === 'na' ? 's' : a2.status === 'cumpre' ? 'm' : a2.instrumento ? 'b' : 'x';
+        const o = meses.get(k); o.dias = Math.max(o.dias, m.diasXv); o.exigidas = Math.max(o.exigidas, m.minimos.A);
+        o.pessoas.push([e.id, m.repousosXv, st, m.minimos.A]);
+      }
       for (const t of e.turnos) {
         const i = t.dia - z0;
         if (i < 0 || i >= n) continue;
@@ -4032,7 +4119,7 @@ button.cd { cursor: pointer; }
         achados.push([a.regra, e.id, st, a.porque || '', lo - z0, hi - z0]);
       }
     }
-    return { inicio: z0, dias: dias, achados: achados, erros: r.erros.map((x) => x.onde + ': ' + x.msg) };
+    return { inicio: z0, dias: dias, achados: achados, meses: Array.from(meses.values()).sort((x, y) => x.a * 12 + x.m - (y.a * 12 + y.m)), erros: r.erros.map((x) => x.onde + ': ' + x.msg) };
   }
 
   /** Horas da equipe de hoje por semana (relógio, computadas e noturnas), na janela de janeiro e fevereiro de 2027. */
@@ -5523,7 +5610,9 @@ button.cd { cursor: pointer; }
    A pergunta do RH vem primeiro: dá para se adaptar sem aumentar o custo, sem mudar os dias de funcionamento e com as
    mesmas pessoas por dia? Depois, todos os caminhos, agrupados pelo que mantêm e mudam, cada um com o que fazer para
    avançar. O dia da equipe em 24 horas mostra os turnos e quantas pessoas trabalham em cada horário, hoje e em cada
-   escala; o calendário, opcional, abre ao clicar. Os refinamentos ficam fechados. */
+   escala; o calendário, opcional, abre ao clicar. Os refinamentos ficam fechados. D120 (24/11/2026): formulário em grade
+   (entrada, saída e pessoas), resultado numa lista comparável que abre no lugar, folgas de cada mês pela Portaria MTE
+   2.041/2026 e o resultado anterior na tela durante o recálculo. */
 (function () {
   'use strict';
   const M = window.MotorEscalas, P = window.PlanejadorEscalas, G = window.GruposEscalas, E = window.EstudoEC141;
@@ -5618,13 +5707,15 @@ button.cd { cursor: pointer; }
     return `<figure class="mini24"><svg viewBox="0 0 ${W} ${alt}" role="img" aria-label="Turnos ao longo das 24 horas">${barras}${eixo}</svg></figure>`;
   }
   function vTurnos() {
-    const op = S.op, n = op.turnos.length;
-    const linhas = op.turnos.map((t, i) => `<div class="turno-linha">${n > 1 ? `<span class="rot-t">${ROT[i]}</span>` : ''}
-        <div class="horario"><input type="time" data-t="${i}" data-tc="inicio" id="f-t${i}-ini" value="${esc(t.inicio)}" aria-label="Entrada${n > 1 ? ' do ' + ROT[i] : ''}"><span>às</span><input type="time" data-t="${i}" data-tc="fim" id="f-t${i}-fim" value="${esc(t.fim)}" aria-label="Saída${n > 1 ? ' do ' + ROT[i] : ''}"></div>
-        <label class="pess"><input type="text" inputmode="numeric" data-t="${i}" data-tc="pessoas" id="f-t${i}-pess" value="${esc(t.pessoas)}" placeholder="0" aria-label="Pessoas${n > 1 ? ' no ' + ROT[i] : ''}"><span>pessoas</span></label>
-        ${n > 1 ? `<button type="button" class="btn mini sem-borda" data-acao="turno-menos" data-v="${i}" aria-label="Tirar o ${ROT[i]}">Tirar</button>` : ''}</div>`).join('');
-    return `<div class="campo"><span class="rot">${n > 1 ? 'Turnos, horário e pessoas' : 'Horário de trabalho e pessoas'}</span>${linhas}
-      ${n < E.MAX_TURNOS ? `<button type="button" class="btn mini" data-acao="turno-mais" id="f-turno-mais">Incluir outro turno</button>` : ''}
+    const op = S.op, n = op.turnos.length, v = n > 1, curto = (i) => ROT[i].replace(' turno', '');
+    const cab = `<div class="tt tt-cab${v ? ' v' : ''}" aria-hidden="true">${v ? '<span></span>' : ''}<span>Entrada</span><span>Saída</span><span>Pessoas</span>${v ? '<span></span>' : ''}</div>`;
+    const linhas = op.turnos.map((t, i) => `<div class="tt${v ? ' v' : ''}">${v ? `<span class="rot-t" title="${ROT[i]}">${curto(i)}</span>` : ''}
+        <input type="time" data-t="${i}" data-tc="inicio" id="f-t${i}-ini" value="${esc(t.inicio)}" aria-label="Entrada${v ? ' do ' + ROT[i] : ''}">
+        <input type="time" data-t="${i}" data-tc="fim" id="f-t${i}-fim" value="${esc(t.fim)}" aria-label="Saída${v ? ' do ' + ROT[i] : ''}">
+        <input type="text" inputmode="numeric" class="num" data-t="${i}" data-tc="pessoas" id="f-t${i}-pess" value="${esc(t.pessoas)}" placeholder="0" aria-label="Pessoas${v ? ' no ' + ROT[i] : ''}">
+        ${v ? `<button type="button" class="x" data-acao="turno-menos" data-v="${i}" aria-label="Tirar o ${ROT[i]}" title="Tirar o ${ROT[i]}">×</button>` : ''}</div>`).join('');
+    return `<div class="campo"><span class="rot">${v ? 'Turnos: horário e pessoas' : 'Horário e pessoas'}</span>${cab}${linhas}
+      ${n < E.MAX_TURNOS ? `<button type="button" class="btn mini sem-borda" data-acao="turno-mais" id="f-turno-mais">+ Incluir outro turno</button>` : ''}
       <small id="f-iv">${esc(intervaloTxt())}</small>${vTurnosNoDia()}</div>`;
   }
   function vNecessidade() {
@@ -5836,7 +5927,7 @@ button.cd { cursor: pointer; }
       Promise.all(fs.map((f) => pedir({ tipo: 'cal', grupos: f.grupos, op: f.op, inicio: E.CAL_INI, fim: E.CAL_FIM })))
         .then((rs) => { S.cal.set(k, { estado: 'ok', rs: rs, fs: fs }); })
         .catch((e) => { S.cal.set(k, { estado: 'erro', erro: e.message }); })
-        .then(() => { const n = document.querySelector(`[data-cal="${CSS.escape(x.id)}"]`); if (n && n.open) n.querySelector('.cal-corpo').innerHTML = vCalCorpo(x); });
+        .then(() => { const n = document.querySelector(`[data-cal="${CSS.escape(x.id)}"]`); if (n && n.open) n.querySelector('.cal-corpo').innerHTML = vCalCorpo(x); const f = document.querySelector(`[data-fm="${CSS.escape(x.id)}"]`); if (f && f.open) f.querySelector('.fm-corpo').innerHTML = vFolgasCorpo(x); });
     }
     return S.cal.get(k);
   }
@@ -5910,16 +6001,105 @@ button.cd { cursor: pointer; }
 
   /* ================================================================ resultado */
 
-  function vCenario(x) {
-    const aberto = S.abertos.has('d-' + x.id);
-    return `<article class="cen" id="c-${esc(x.id)}">
-      <header><h4>${esc(x.nome)}</h4>${x.resumo ? `<p class="det">${esc(x.resumo)}</p>` : ''}</header>
-      ${vEtapas(x)}${vFatos(x)}${vPassos(x)}
-      <details class="detalhes" data-abre="d-${esc(x.id)}"${aberto ? ' open' : ''}><summary>Ver detalhes, o dia em 24 horas e testar ajustes</summary><div class="det-corpo">${aberto ? vDetalhes(x) : ''}</div></details>
-      ${vCalendario(x)}
-    </article>`;
+  /* Resultado (D120, pedido de 24/11/2026: resultado mais curto e comparável): cada escala é uma linha com a situação nas
+     duas etapas, pessoas, folha, pessoas por dia e folgas; a linha abre no lugar com o que muda, o que fazer para avançar, as
+     folgas de cada mês pela portaria, o dia em 24 horas, a escala pessoa por pessoa e o calendário. */
+  const NIVEL_CURTO = { ok: 'Adere', acordo: 'Adere com acordo', norma: 'Depende de norma', nao: 'Não adere' };
+  const CERT_CURTO = { liminar: 'pela liminar', leitura: 'leitura a validar' };
+  const pillCurta = (s) => `<span class="pill ${NIVEL_CLS[s.nivel]}" title="${esc(s.rot + (s.det ? '. ' + s.det : ''))}">${esc(NIVEL_CURTO[s.nivel] || s.rot)}</span>${s.nivel !== 'nao' && CERT_CURTO[s.cert] ? `<small class="cert-c">${esc(CERT_CURTO[s.cert])}</small>` : ''}`;
+  /** Folgas por semana na grade de cada pessoa: menor e maior número, somando os turnos. */
+  function folgasSemana(x) {
+    let min = Infinity, max = 0;
+    for (const p of x.partes || []) {
+      const g = x.id === 'hoje' ? p.c && p.c.grade : gradeBase(p);
+      if (!g || !g.linhas) continue;
+      // 'R' é folga; 'F' completa a grade além do ciclo e não conta
+      for (const l of g.linhas) for (let w = 0; w < g.semanas; w++) {
+        const sem = l.dias.slice(w * 7, w * 7 + 7);
+        if (sem.length < 7 || sem.indexOf('F') >= 0) continue;
+        const f = sem.filter((c) => c === 'R').length;
+        min = Math.min(min, f); max = Math.max(max, f);
+      }
+    }
+    if (min === Infinity) return '—';
+    const media = (x.etapas.e1.fundamentos || []).concat(x.etapas.e2.fundamentos || []).some((u) => u.regra === 'R2' || (u.regra === 'R1' && u.status !== 'nao_cumpre'));
+    if (min < 2 && media) return '<span class="sobe">média do mês</span>';
+    const t = min === max ? min + ' por semana' : min + ' a ' + max + ' por semana';
+    return min < 2 ? `<span class="nok-t">${t}</span>` : t;
   }
-  const vDetalhes = (x) => vFundamentos(x) + vDia24(x) + vEscala(x);
+  function linhaSum(x) {
+    const f = x.fatos, ehHoje = x.id === 'hoje', p = f.pessoas, c = p.contrI + p.contrP;
+    const pess = ehHoje ? String(p.hoje) : c ? `${p.usadas} <span class="sobe">(+${c})</span>` : p.usadas < p.hoje ? `${p.usadas} <span class="suave">de ${p.hoje}</span>` : String(p.hoje);
+    let folha = '—';
+    if (ehHoje) folha = reais(f.custo.hoje);
+    else if (f.custo.e2 != null && f.custo.hoje != null) { const d = f.custo.e2 - f.custo.hoje; folha = reais(f.custo.e2) + (Math.abs(d) < 1 ? ' <span class="suave">igual</span>' : ` <span class="${d > 0 ? 'sobe' : 'desce'}">${d > 0 ? '+' : '−'}${Math.abs(d / f.custo.hoje) < 0.005 ? reais(d) : pct(d / f.custo.hoje)}</span>`); }
+    const pd = ehHoje ? esc(f.porDia.hoje) : f.porDia.mantida ? esc(f.porDia.texto) : `<span class="sobe">${esc(f.porDia.texto)}</span>`;
+    const dias = !ehHoje && !f.dias.iguais ? `<small class="sobe">Funciona ${esc(f.dias.texto)}</small>` : '';
+    return `<summary class="ls"><span class="ls-nome"><b>${esc(x.nome)}</b>${dias}</span>
+      <span class="ls-c ls-e" data-rot="Até 15/12/2027">${pillCurta(x.etapas.e1)}</span><span class="ls-c ls-e" data-rot="Desde 16/12/2027">${pillCurta(x.etapas.e2)}</span>
+      <span class="ls-c" data-rot="Pessoas">${pess}</span><span class="ls-c" data-rot="Folha por mês">${folha}</span><span class="ls-c" data-rot="Por dia">${pd}</span><span class="ls-c" data-rot="Folgas">${folgasSemana(x)}</span><span class="ls-ch" aria-hidden="true"></span></summary>`;
+  }
+  function vLinha(x) {
+    const ehHoje = x.id === 'hoje', aberto = S.abertos.has('c-' + x.id), h = ehHoje ? S.est : null;
+    const custoHoje = ehHoje ? `<p class="det">${plural(h.ctx.pessoas, 'pessoa', 'pessoas')}${varios() ? ' em ' + S.op.turnos.length + ' turnos' : ''} · folha de ${reais(x.fatos.custo.hoje)} por mês com encargos de ${esc(String(h.enc.pct).replace('.', ','))}%${h.enc.informado ? '' : ' (regime não informado: lucro presumido ou real)'}${x.fatos.custo.e2 != null && Math.abs(x.fatos.custo.e2 - x.fatos.custo.hoje) >= 1 ? '; a partir de 16/12/2027, com as horas acima do limite pagas como extras, ' + reais(x.fatos.custo.e2) : ''}.</p>` : '';
+    const passos = ehHoje ? (x.passos.length ? vPassos(x).replace('<h5>Para avançar</h5>', '<h5>Para manter a escala de hoje</h5>') : '') : vPassos(x);
+    const resumo = !ehHoje && x.resumo ? `<p class="det">${esc(x.resumo)}</p>` : '';
+    return `<details class="lin${ehHoje ? ' lin-hoje' : ''}" id="c-${esc(x.id)}" data-abre="c-${esc(x.id)}"${aberto ? ' open' : ''}>${linhaSum(x)}
+      <div class="lc">${resumo}${vEtapas(x)}${ehHoje ? custoHoje : vFatos(x)}${passos}${vFolgasMes(x)}
+        <details class="detalhes" data-abre="d-${esc(x.id)}"${S.abertos.has('d-' + x.id) ? ' open' : ''}><summary>${ehHoje ? 'Ver o dia em 24 horas' : 'Ver por quê, o dia em 24 horas e testar ajustes na escala'}</summary><div class="det-corpo">${S.abertos.has('d-' + x.id) ? vDetalhes(x) : ''}</div></details>
+        ${vCalendario(x)}</div></details>`;
+  }
+  const vDetalhes = (x) => (x.id === 'hoje' ? vDia24(x) : vFundamentos(x) + vDia24(x) + vEscala(x));
+
+  /* ---------------------------------------------------------------- folgas de cada mês (Portaria MTE 2.041/2026, art. 4º) */
+  function nomesDe(g, t) {
+    const rot = new Map(); let k0 = 0, kn = 0;
+    if (g) for (const l of g.linhas) rot.set(l.id, l.nova ? 'Nova ' + (++kn) : 'Pessoa ' + (++k0));
+    return (id) => (varios() ? ROT[t].replace(' turno', '') + ' · ' : '') + (rot.get(id) || 'Pessoa');
+  }
+  function vFolgasMes(x) {
+    const aberto = S.abertos.has('fm-' + x.id);
+    return `<details class="detalhes fm" data-fm="${esc(x.id)}" data-abre="fm-${esc(x.id)}"${aberto ? ' open' : ''}><summary>Folgas de cada mês, pela portaria</summary><div class="fm-corpo">${aberto ? vFolgasCorpo(x) : ''}</div></details>`;
+  }
+  const MES_CURTO = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  function vFolgasCorpo(x) {
+    const c = calDe(x);
+    if (c.estado === 'calc') return '<p class="det">Contando as folgas de cada pessoa, mês a mês…</p>';
+    if (c.estado === 'erro') return `<p class="aviso">Não foi possível contar as folgas: ${esc(c.erro)}</p>`;
+    const ms = new Map();
+    c.rs.forEach((r, t) => {
+      const nome = nomesDe(c.fs[t].grade, t);
+      for (const m of r.meses || []) {
+        const k = m.a * 12 + m.m - 1;
+        if (!ms.has(k)) ms.set(k, { a: m.a, m: m.m, dias: m.dias, diasMes: m.diasMes, exigidas: m.exigidas, ps: [] });
+        for (const q of m.pessoas) ms.get(k).ps.push({ id: t + '|' + q[0], nome: nome(q[0]), n: q[1], st: q[2] });
+      }
+    });
+    const lista = Array.from(ms.entries()).sort((a, b) => a[0] - b[0]).map((e) => e[1]);
+    if (!lista.length) return '<p class="det">Sem meses para contar.</p>';
+    const situ = (m) => {
+      const x2 = m.ps.filter((q) => q.st === 'x'), b = m.ps.filter((q) => q.st === 'b'), md = m.ps.some((q) => q.st === 'm');
+      if (b.length) return `<span class="nok-t">Abaixo do mínimo: ${esc(juntarE(b.slice(0, 4).map((q) => q.nome + ' (' + q.n + ')')))}${b.length > 4 ? ' e mais ' + (b.length - 4) : ''}</span>`;
+      if (x2.length) return `<span class="nok-t">${plural(x2.length, 'pessoa tem', 'pessoas têm')} semana com uma folga só, sem norma coletiva de média</span>`;
+      if (md) return '<span class="ok-t">Cumpre pela média do mês, com a norma coletiva</span>';
+      return '<span class="ok-t">Duas folgas em todas as semanas: o mínimo do mês não se aplica</span>';
+    };
+    const linhas = lista.map((m) => {
+      const ns = m.ps.map((q) => q.n), lo = Math.min.apply(null, ns), hi = Math.max.apply(null, ns), parcial = m.dias < m.diasMes;
+      return `<tr><th scope="row">${MES_CURTO[m.m - 1].charAt(0).toUpperCase() + MES_CURTO[m.m - 1].slice(1)}/${m.a}</th><td data-rot="dias">${m.dias}${parcial ? ' <small>desde 16/12</small>' : ''}</td><td data-rot="mínimo">${m.ps.every((q) => q.st === 's') ? `<span class="suave" title="Não se aplica: duas folgas em todas as semanas">${m.exigidas}</span>` : `<b>${m.exigidas}</b>`}</td><td data-rot="folgas">${lo === hi ? lo : lo + ' a ' + hi}</td><td>${situ(m)}</td></tr>`;
+    }).join('');
+    // pessoa por pessoa: linhas = pessoas, colunas = meses
+    const pessoas = []; const vist = new Map();
+    for (const m of lista) for (const q of m.ps) if (!vist.has(q.id)) { vist.set(q.id, pessoas.length); pessoas.push({ nome: q.nome, v: new Map() }); }
+    lista.forEach((m, j) => m.ps.forEach((q) => pessoas[vist.get(q.id)].v.set(j, q)));
+    const cab = `<tr><th scope="col">Pessoa</th>${lista.map((m) => `<th scope="col">${MES_CURTO[m.m - 1]}/${String(m.a).slice(2)}<br><small>mín. ${m.exigidas}</small></th>`).join('')}</tr>`;
+    const corpo = pessoas.map((pp) => `<tr><th scope="row">${esc(pp.nome)}</th>${lista.map((_, j) => { const q = pp.v.get(j); return q ? `<td class="${q.st === 'b' || q.st === 'x' ? 'f-nok' : q.st === 'm' ? 'f-med' : ''}">${q.n}</td>` : '<td>–</td>'; }).join('')}</tr>`).join('');
+    return `<p class="det">Mínimo do mês pela Portaria MTE 2.041/2026 (art. 4º, § 4º): o dobro dos dias do mês dividido por sete, arredondado para cima. Dá 9 nos meses de 29, 30 e 31 dias e 8 em fevereiro de 28. Esse mínimo vale para quem tem semana com uma folga só, o que exige convenção ou acordo coletivo de média (art. 4º, § 3º). Com duas folgas em todas as semanas, a média não se aplica, e um mês com 8 folgas está correto (art. 4º, § 1º). Dezembro de 2026 conta só a partir do dia 16, quando a regra começa: 2 × 16 ÷ 7 dá 5.</p>
+      <div class="tab-rol"><table class="tfm"><thead><tr><th scope="col">Mês</th><th scope="col">Dias</th><th scope="col">Mínimo</th><th scope="col">Folgas por pessoa</th><th scope="col">Situação</th></tr></thead><tbody>${linhas}</tbody></table></div>
+      <details class="detalhes"><summary>Ver pessoa por pessoa</summary><div class="tab-rol"><table class="tfm tfp"><thead>${cab}</thead><tbody>${corpo}</tbody></table></div>
+      <p class="det">Em vermelho, o mês abaixo do mínimo, ou com semana de uma folga só sem a norma coletiva; em âmbar, o mês que fecha pela média, com a norma. A contagem é a do motor: cada folga conta quando garante 24 horas de descanso além das 11 horas entre jornadas, e duas folgas seguidas precisam de 48 horas além delas (art. 4º, § 2º).</p></details>`;
+  }
+
   function vResposta(est) {
     const r = est.resposta, ppd = est.hoje ? est.hoje.fatos.porDia.hoje : String(est.ctx.pessoas);
     const pergunta = `Dá para se adaptar à Emenda sem aumentar o custo, sem mudar os dias de funcionamento e com as mesmas ${esc(ppd)} pessoas por dia${varios() ? ', somando os turnos' : ''}?`;
@@ -5927,33 +6107,31 @@ button.cd { cursor: pointer; }
     return `<section class="resposta ${cls}" id="resposta"><span class="eyebrow">A pergunta</span><h2 class="pergunta">${pergunta}</h2>
       <p class="veredito">${esc(r.titulo)}</p><p>${esc(r.texto)}</p>
       ${r.caminhos.length ? `<ul class="caminhos">${r.caminhos.map((k) => `<li><a href="#c-${esc(k.id)}" data-acao="ir" data-id="${esc(k.id)}">${esc(k.nome)}</a>: ${esc(k.texto)}</li>`).join('')}</ul>` : ''}
-      ${est.ctx.informada ? '<p class="det">Pessoas por dia: a necessidade informada nos refinamentos.</p>' : ''}
-      <nav class="atalhos" aria-label="Grupos de escalas"><span class="eyebrow">Todos os caminhos</span><ul>${est.grupos.map((g) => `<li><a href="#g-${g.k}" data-acao="grupo" data-id="${g.k}">${esc(g.titulo)}</a> <span class="suave">(${g.itens.length})</span></li>`).join('')}</ul></nav></section>`;
-  }
-  function vHoje(est) {
-    const h = est.hoje;
-    if (!h) return '';
-    return `<section class="hoje-box"><span class="eyebrow">Sua escala de hoje</span><h3>${esc(h.nome)}${S.op.ref.nome ? ' · ' + esc(S.op.ref.nome) : ''}</h3>${vEtapas(h)}
-      <p class="det">${plural(est.ctx.pessoas, 'pessoa', 'pessoas')}${varios() ? ' em ' + S.op.turnos.length + ' turnos' : ''} · folha de ${reais(h.fatos.custo.hoje)} por mês com encargos de ${esc(String(est.enc.pct).replace('.', ','))}%${est.enc.informado ? '' : ' (regime não informado: lucro presumido ou real)'}${h.fatos.custo.e2 != null && Math.abs(h.fatos.custo.e2 - h.fatos.custo.hoje) >= 1 ? '; a partir de 16/12/2027, com as horas acima do limite pagas como extras, ' + reais(h.fatos.custo.e2) : ''}.</p>
-      ${h.passos.length ? vPassos(h).replace('<h5>Para avançar</h5>', '<h5>Para manter a escala de hoje</h5>') : ''}${vDia24(h)}${vCalendario(h)}</section>`;
+      ${est.ctx.informada ? '<p class="det">Pessoas por dia: a necessidade informada nos refinamentos.</p>' : ''}</section>`;
   }
   const COMUM = ['Manter o salário de quem já está na equipe: a redução da jornada não reduz o salário (Emenda Constitucional 141, art. 2º).',
     'Formalizar a nova escala e o novo horário por escrito com cada empregado e atualizar o controle de ponto.',
-    'Garantir, mês a mês, duas folgas por semana para cada pessoa e no máximo seis dias seguidos de trabalho.',
+    'Garantir duas folgas em cada semana e no máximo seis dias seguidos de trabalho; com norma coletiva de média, no mínimo o dobro dos dias do mês dividido por sete, arredondado para cima (Portaria MTE 2.041/2026, art. 4º).',
     'Se a escala depende de convenção ou acordo coletivo, ter a norma assinada antes de a escala começar.'];
+  function vQuadro(est) {
+    const cab = `<div class="ls ls-cab" aria-hidden="true"><span>Escala</span><span>Até 15/12/2027<small>limite de 42 h</small></span><span>Desde 16/12/2027<small>limite de 40 h</small></span><span>Pessoas</span><span>Folha por mês</span><span>Por dia</span><span>Folgas</span><span></span></div>`;
+    const hoje = est.hoje ? `<div class="gl"><h3 class="gl-t">Hoje</h3>${vLinha(est.hoje)}</div>` : '';
+    const grupos = est.grupos.map((g) => `<div class="gl g-${g.k}" id="g-${g.k}"><h3 class="gl-t">${esc(g.titulo)} <span class="suave">(${g.itens.length})</span></h3>${g.k === 'nao' ? '<p class="det gl-n">Mostradas para referência: não servem para a adequação.</p>' : ''}${g.itens.map(vLinha).join('')}</div>`).join('');
+    const faltam = est.faltam && est.faltam.length ? `<p class="nota gl-n">Não entram na lista, porque não puderam ser montadas em todos os turnos: ${esc(juntarE(est.faltam.map((f) => f.nome + ' (falta no ' + juntarE(f.turnos) + ')')))}.</p>` : '';
+    return `<section class="quadro" id="quadro"><div class="q-cab"><div><span class="eyebrow">Todos os caminhos</span><h2>As escalas testadas</h2>
+      <p class="nota">Em ordem fixa, sem classificação. Clique numa escala para ver o que muda, o que fazer para avançar, as folgas de cada mês e o calendário.${varios() ? ' Cada escala vale para todos os turnos; os números somam os turnos.' : ''}</p></div>
+      <div class="exportar"><button type="button" class="btn primario mini" data-acao="pdf" id="b-pdf">Baixar em PDF</button><button type="button" class="btn mini" data-acao="xlsx" id="b-xlsx">Baixar a planilha</button></div></div>
+      ${cab}${hoje}${grupos}${faltam}</section>`;
+  }
   function vResultado() {
     if (S.estado === 'vazio') return `<section class="vazio"><span class="eyebrow">Resultado</span><h2>Preencha a sua equipe</h2><p class="lead">Com os dados da equipe, o simulador responde se dá para se adaptar à Emenda Constitucional 141 (Fim da 6x1) sem aumentar o custo e sem mudar os dias de funcionamento, e mostra todos os caminhos.</p>${S.erro && (S.op.salario !== '' || S.op.turnos.some((t) => t.pessoas !== '')) ? `<p class="aviso">${esc(S.erro)}</p>` : ''}</section>`;
-    if (S.estado === 'calc') return `<section class="vazio"><span class="eyebrow">Resultado</span><h2>Calculando…</h2><p class="lead">Conferindo cada escala nas duas etapas da Emenda, dia a dia${varios() ? ', em cada turno' : ''}.</p></section>`;
+    if (S.estado === 'calc' && !S.est) return `<section class="vazio"><span class="eyebrow">Resultado</span><h2>Calculando…</h2><p class="lead">Conferindo cada escala nas duas etapas da Emenda, dia a dia${varios() ? ', em cada turno' : ''}.</p></section>`;
     if (S.estado === 'erro') return `<section class="vazio"><span class="eyebrow">Resultado</span><h2>Não foi possível calcular</h2><p class="aviso">${esc(S.erro)}</p></section>`;
     const est = S.est;
-    const grupos = est.grupos.map((g) => `<section class="grupo g-${g.k}" id="g-${g.k}"><h3>${esc(g.titulo)}</h3>${g.k === 'nao' ? '<p class="det">Mostradas para referência: não servem para a adequação.</p>' : ''}<div class="lista">${g.itens.map(vCenario).join('')}</div></section>`).join('');
-    const faltam = est.faltam && est.faltam.length ? `<p class="nota">Não entram na lista, porque não puderam ser montadas em todos os turnos: ${esc(juntarE(est.faltam.map((f) => f.nome + ' (falta no ' + juntarE(f.turnos) + ')')))}.</p>` : '';
-    return `${vResposta(est)}${vHoje(est)}
-      <div class="exportar"><button type="button" class="btn primario" data-acao="pdf" id="b-pdf">Baixar o estudo em PDF</button><button type="button" class="btn" data-acao="xlsx" id="b-xlsx">Baixar a planilha</button></div>
-      <section class="caminhos-todos"><span class="eyebrow">Todos os caminhos</span><h2>As escalas testadas</h2><p class="nota">Em ordem fixa, sem classificação, agrupadas pelo que cada uma mantém e muda em relação a hoje. Para cada uma: a situação nas duas etapas da Emenda, o que muda e o que a empresa precisa fazer para avançar.${varios() ? ' Cada escala vale para todos os turnos; o que muda em cada turno aparece com o nome dele.' : ''}</p>${faltam}</section>
-      ${grupos}
+    // durante o recálculo, o resultado anterior fica na tela, esmaecido, para a página não pular
+    return `<div class="res${S.estado === 'calc' ? ' recalc' : ''}">${S.estado === 'calc' ? '<p class="recalc-t" role="status">Recalculando…</p>' : ''}${vResposta(est)}${vQuadro(est)}
       <section class="comum"><h3>Para qualquer escala</h3><ul>${COMUM.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></section>
-      ${vBase()}`;
+      ${vBase()}</div>`;
   }
   function baseTxt() {
     return 'Base normativa: Emenda Constitucional 141/2026 (Fim da 6x1); Decreto 13.173, de 19/11/2026 (turno ininterrupto, 12x36 apurada no mês-calendário e divisores de 210 e 200); Portaria MTE 2.041, de 19/11/2026, publicada em 23/11/2026 (médias de horas e de repousos apuradas no mês-calendário, mínimo de repousos do mês pelo dobro dos dias dividido por sete, no máximo seis dias seguidos de trabalho, domingo e atividade insalubre); CLT e súmulas do TST; e liminar do STF na ADI 8.041 (12/11/2026), em vigor até o julgamento de mérito pelo Plenário (rito convertido em 17/11/2026). Base conferida até ' + M.BASE_NORMATIVA + '.';
@@ -5983,9 +6161,8 @@ button.cd { cursor: pointer; }
   /** Redesenha só um cartão (ou o quadro de hoje), mantendo a página no lugar. */
   function renderItem(id) {
     if (!S.est) return;
-    if (id === 'hoje') { const n = $('.hoje-box'); if (n) n.outerHTML = vHoje(S.est); return; }
-    const x = S.est.cenarios.find((y) => y.id === id), n = document.getElementById('c-' + id);
-    if (x && n) n.outerHTML = vCenario(x); else renderResultado();
+    const x = achar(id), n = document.getElementById('c-' + id);
+    if (x && n) n.outerHTML = vLinha(x); else renderResultado();
   }
   function mudou(formTambem) { salvar(); if (formTambem) renderForm(); agendar(); }
 
@@ -6013,7 +6190,7 @@ button.cd { cursor: pointer; }
     'cal-mes': (b) => { S.calMes[b.dataset.id] = Math.max(0, Number(b.dataset.v)); S.calDia[b.dataset.id] = null; const n = document.querySelector(`[data-cal="${CSS.escape(b.dataset.id)}"] .cal-corpo`); const x = achar(b.dataset.id); if (n && x) n.innerHTML = vCalCorpo(x); },
     'cal-dia': (b) => { const v = Number(b.dataset.v); S.calDia[b.dataset.id] = S.calDia[b.dataset.id] === v ? null : v; const n = document.querySelector(`[data-cal="${CSS.escape(b.dataset.id)}"] .cal-corpo`); const x = achar(b.dataset.id); if (n && x) { n.innerHTML = vCalCorpo(x); focar(`[data-acao="cal-dia"][data-id="${b.dataset.id}"][data-v="${v}"]`); } },
     grupo: (b, ev) => { const n = document.getElementById('g-' + b.dataset.id); if (n) { ev.preventDefault(); n.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
-    ir: (b, ev) => { const n = document.getElementById('c-' + b.dataset.id); if (n) { ev.preventDefault(); n.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
+    ir: (b, ev) => { const n = document.getElementById('c-' + b.dataset.id); if (n) { ev.preventDefault(); n.open = true; S.abertos.add('c-' + b.dataset.id); n.scrollIntoView({ behavior: 'smooth', block: 'start' }); } },
     pdf: () => baixarPDF(),
     xlsx: () => baixarXLSX(),
   };
@@ -6037,6 +6214,7 @@ button.cd { cursor: pointer; }
     if (!d.open) return;
     if (k.indexOf('d-') === 0) { const c = d.querySelector('.det-corpo'), x = achar(k.slice(2)); if (c && x && !c.innerHTML) c.innerHTML = vDetalhes(x); }
     if (k.indexOf('cal-') === 0) { const c = d.querySelector('.cal-corpo'), x = achar(k.slice(4)); if (c && x && !c.innerHTML.trim()) c.innerHTML = vCalCorpo(x); }
+    if (k.indexOf('fm-') === 0) { const c = d.querySelector('.fm-corpo'), x = achar(k.slice(3)); if (c && x && !c.innerHTML.trim()) c.innerHTML = vFolgasCorpo(x); }
   }, true);
   document.addEventListener('input', (ev) => {
     const n = ev.target;
