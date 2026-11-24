@@ -295,8 +295,8 @@ button.cd { cursor: pointer; }
 })(typeof globalThis !== 'undefined' ? globalThis : this, function () {
   'use strict';
 
-  const VERSAO = '0.4.0';
-  const BASE_NORMATIVA = '23/11/2026';   // Emenda 141/2026, liminar na ADI 8.041 (12/11), rito de mérito (17/11) e Decreto 13.173/2026 (19/11)
+  const VERSAO = '0.5.0';
+  const BASE_NORMATIVA = '23/11/2026';   // Emenda 141/2026, liminar na ADI 8.041 (12/11), rito de mérito (17/11), Decreto 13.173/2026 (19/11) e Portaria MTE 2.041/2026 (23/11)
   const U = 7;
   const HORA = 60 * U;
   const DIA = 1440;
@@ -435,11 +435,14 @@ button.cd { cursor: pointer; }
     art9: 'literal',             // 'literal' (XV desde 16/12/2026) | 'diferido'
     turnoDia: 'inicio',          // 'inicio' | 'civil' (rateio pelo dia civil)
     prorrogacaoReduzida: true,   // hora reduzida estendida à prorrogação (art. 73, § 5º)
-    criterioMedia: 'A',          // 'A' | 'B' | 'C' (§ 2º)
+    criterioMedia: 'A',          // 'A' | 'B' | 'C' (§ 2º); o A é o da Portaria MTE 2.041/2026, art. 4º, § 4º (D119); B e C ficam só como comparação
+    janela28: false,             // D102 (janelas de 28 dias com a liminar): desligada desde a Portaria MTE 2.041/2026, que apura a média no mês-calendário (D119)
     semanaInicio: 0,             // 0 = segunda-feira
     sinalContrafactual: true,
   });
 
+  /* D01: 16/12/2026 (42 h e dois repousos) e 16/12/2027 (40 h), confirmadas pela Portaria MTE 2.041/2026, art. 16 (D119);
+     a contagem 'civil' fica só como comparação. */
   function datasVigencia(prazos) {
     const c = prazos === 'civil' ? 1 : 0;
     return {
@@ -457,23 +460,25 @@ button.cd { cursor: pointer; }
     compensacao_mensal: { nome: 'Acordo de compensação no mês', natureza: 'individual', base: 'CLT, art. 59, § 6º; Súmula 85, I, do TST' },
     banco_semestral: { nome: 'Banco de horas semestral', natureza: 'individual', base: 'CLT, art. 59, § 5º' },
     banco_anual: { nome: 'Banco de horas anual', natureza: 'coletivo', base: 'CLT, art. 59, § 2º' },
-    media_par2: { nome: 'Regime de média de repousos', natureza: 'coletivo', base: 'CF, art. 7º, § 2º' },
+    media_par2: { nome: 'Regime de média de repousos', natureza: 'coletivo', base: 'CF, art. 7º, § 2º; Portaria MTE 2.041/2026, art. 4º, §§ 3º e 4º' },
     ampliacao_art7: { nome: 'Ampliação da duração diária na etapa de 42 h', natureza: 'coletivo', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 7º' },
     escala_12x36: { nome: 'Escala 12x36', natureza: 'individual', base: 'CLT, art. 59-A' },
     jornada_12h: { nome: 'Jornada de 12 h fora da 12x36', natureza: 'coletivo', base: 'CLT, art. 611-A, I; STF, Tema 1.046' },
-    // D108: semanas acima do teto (até 42 h) com dias acima de 8 h, fechadas pela média em norma coletiva específica
-    compensacao_media: { nome: 'Compensação pela média em norma coletiva (semanas de até 42 h)', natureza: 'coletivo', base: 'CF, art. 7º, XIII; CLT, art. 611-A, I' },
-    turno_ininterrupto_8h: { nome: 'Turno ininterrupto de até 8 h', natureza: 'coletivo', base: 'CF, art. 7º, XIV; Súmula 423 do TST' },
+    // D108: semanas acima do teto (até 42 h) com dias acima de 8 h, fechadas pela média em norma coletiva específica;
+    // D119: a média se apura no mês-calendário (Portaria MTE 2.041/2026, arts. 2º e 3º)
+    compensacao_media: { nome: 'Compensação pela média do mês em norma coletiva (semanas de até 42 h)', natureza: 'coletivo', base: 'CF, art. 7º, XIII; Portaria MTE 2.041/2026, arts. 2º e 3º' },
+    turno_ininterrupto_8h: { nome: 'Turno ininterrupto de até 8 h', natureza: 'coletivo', base: 'CF, art. 7º, XIV; Súmula 423 do TST; Portaria MTE 2.041/2026, art. 7º' },
     reducao_intervalo: { nome: 'Redução do intervalo intrajornada', natureza: 'coletivo', base: 'CLT, art. 611-A, III' },
     reducao_intervalo_mte: { nome: 'Autorização ministerial para reduzir o intervalo', natureza: 'ato do Ministério do Trabalho', base: 'CLT, art. 71, § 3º' },
     intervalo_superior_2h: { nome: 'Intervalo superior a 2 h', natureza: 'individual', base: 'CLT, art. 71, caput' },
-    // D113: atividade insalubre (CLT, art. 60): licença prévia da autoridade, ou norma coletiva que a dispense (art. 611-A, XIII)
-    licenca_art60: { nome: 'Licença prévia para prorrogação em atividade insalubre', natureza: 'ato do Ministério do Trabalho', base: 'CLT, art. 60' },
-    prorrogacao_insalubre: { nome: 'Norma coletiva de prorrogação em atividade insalubre sem licença prévia', natureza: 'coletivo', base: 'CLT, art. 611-A, XIII' },
+    // D113 e D119: atividade insalubre (CLT, art. 60; Portaria MTE 2.041/2026, art. 15): autorização da chefia de segurança e
+    // saúde no trabalho da Inspeção do Trabalho (inciso III), ou norma coletiva que autorize expressamente a prorrogação (inciso II)
+    licenca_art60: { nome: 'Autorização da Inspeção do Trabalho para prorrogação em atividade insalubre', natureza: 'ato do Ministério do Trabalho', base: 'CLT, art. 60; Portaria MTE 2.041/2026, art. 15, III' },
+    prorrogacao_insalubre: { nome: 'Norma coletiva que autorize expressamente a prorrogação em atividade insalubre', natureza: 'coletivo', base: 'CLT, art. 611-A, XIII; Portaria MTE 2.041/2026, art. 15, II' },
     fracionamento_intervalo: { nome: 'Fracionamento do intervalo', natureza: 'coletivo', base: 'CLT, art. 71, § 5º' },
     feriado_comercio: { nome: 'Trabalho em feriados no comércio', natureza: 'coletivo', base: 'Lei 10.101/2000, art. 6º-A' },
     // D118: 12x36 com média do mês acima do limite semanal: compensação ou pagamento das horas, nos termos de norma coletiva
-    excesso_12x36: { nome: 'Compensação ou pagamento das horas da 12x36 acima do limite do mês', natureza: 'coletivo', base: 'Decreto 13.173/2026, art. 3º' },
+    excesso_12x36: { nome: 'Compensação ou pagamento das horas da 12x36 acima do limite do mês', natureza: 'coletivo', base: 'Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, art. 8º' },
   };
   const TIPOS_COMPENSACAO = ['compensacao_mensal', 'banco_semestral', 'banco_anual', 'compensacao_media'];
 
@@ -1082,33 +1087,18 @@ button.cd { cursor: pointer; }
     }
 
     /**
-     * Maior média semanal (horas computadas) no ciclo da escala, nas janelas de ciclos completos que contêm a semana que
-     * começa em ws (D108): a janela tem o mínimo múltiplo comum entre o ciclo da escala e 7 dias (6 semanas na 4x2, 8 na
-     * 6x2, as semanas do rodízio nas escalas semanais), de modo que qualquer janela dá a média exata do ciclo.
+     * Média do mês-calendário que contém o dia d (D119; Portaria MTE 2.041/2026, art. 3º: "o limite médio da duração semanal e
+     * mensal do trabalho será aferido no mês-calendário"): horas do mês, na medida das regras de teto, contra o limite semanal
+     * dividido por sete em cada dia em serviço, a mesma conta de J4 e J6. Antes (D108), a média se tomava no ciclo da escala.
      */
-    let pMed = null;
-    const mdc = (x, y) => (y ? mdc(y, x % y) : x);
-    /** Repousos do mês-calendário que contém o dia d contra o mínimo do critério adotado (D109). */
-    function repousosMes(d) {
-      const c = civil(d), ini = diaDe(c.a, c.m, 1), nd = diasNoMes(c.a, c.m), fim = ini + nd - 1;
-      let sv = 0, fds = 0, rp = 0;
+    function mediaMes(d) {
+      const c = civil(d), ini = diaDe(c.a, c.m, 1), fim = ini + diasNoMes(c.a, c.m) - 1;
+      let tot = 0, lim = 0, sv = 0;
       for (let x = Math.max(ini, A); x <= Math.min(fim, ctx.janela.b); x++) {
-        if (emServico(dias[x - A])) { sv++; if (diaSemana(x) >= 5) fds++; }
-        if (RP.rep.has(x)) rp++;
+        if (emServico(dias[x - A])) { sv++; lim += T.tetoEf(x) * 60; }
+        tot += med(x - A);
       }
-      const min = { A: Math.ceil(2 * sv / 7), B: fds, C: Math.ceil(8 * sv / nd) }[cfg.criterioMedia] || Math.ceil(2 * sv / 7);
-      return { ok: rp >= min, rp: rp, min: min, rot: NOMES_MES[c.m - 1] + '/' + c.a };
-    }
-    function mediaJanela(ws) {
-      const B = ctx.janela.b;
-      if (!pMed) { pMed = new Float64Array(B - A + 2); for (let i = 0; i <= B - A; i++) pMed[i + 1] = pMed[i] + (dias[i] && dias[i].turnos.length ? med(i) : 0); }
-      let L = 0;
-      for (let k = 0; k < 7 && !L; k++) { const r = dias[ws + k - A]; if (r && r.ciclo) L = r.ciclo; }
-      const P = Math.min(364, L ? L * 7 / mdc(L, 7) : 28);
-      let mx = -Infinity;
-      for (let a0 = Math.max(A, ws + 6 - P + 1); a0 <= Math.min(ws, B - P + 1); a0++) mx = Math.max(mx, (pMed[a0 + P - A] - pMed[a0 - A]) / (P / 7));
-      if (mx === -Infinity) { const a0 = Math.max(A, Math.min(ws, B - P + 1)), a1 = Math.min(B, a0 + P - 1); mx = (pMed[a1 - A + 1] - pMed[a0 - A]) / ((a1 - a0 + 1) / 7); }
-      return mx;
+      return { ok: tot <= lim + 1e-6, tot: tot, lim: lim, semanal: sv ? tot * 7 / sv : 0, rot: NOMES_MES[c.m - 1] + '/' + c.a };
     }
 
     /* ---------- semanas */
@@ -1245,16 +1235,17 @@ button.cd { cursor: pointer; }
             }
           } else {
             // D108: semana de até 42 h acima do teto, com dias acima de 8 h, só com norma coletiva específica de compensação
-            // pela média, e a média das janelas de 28 dias que contêm a semana no teto
+            // pela média; D119: a média se confere no mês-calendário (Portaria MTE 2.041/2026, art. 3º), em cada mês que a
+            // semana toca. Os repousos ficam com R1 e R2 (a média de repousos do mês só vale com a norma do § 2º e só quando
+            // alguma semana tem menos de dois); antes, J1 os conferia de novo e reprovava um 5x2 em mês com oito dias de fim de semana.
             const bm = totU <= 42 * HORA && emp.tipo !== 'menor' ? buscarInstrumento(ctx, emp, ['compensacao_media'], ws) : null;
             if (bm && bm.ok) {
-              const pm = mediaJanela(ws), okH = pm <= limU + 1e-6;
-              const ms = [repousosMes(ws), repousosMes(ws + 6)].filter((x, k, xs) => k === 0 || x.rot !== xs[0].rot), mRuim = ms.find((x) => !x.ok), ok = okH && !mRuim;
+              const hs = [mediaMes(ws), mediaMes(ws + 6)].filter((x, k, xs) => k === 0 || x.rot !== xs[0].rot), hRuim = hs.find((x) => !x.ok), ok = !hRuim;
+              const txtH = hs.map((x) => x.rot + ', ' + fmtHoras(x.tot) + ' para o limite de ' + fmtHoras(x.lim) + ' (média de ' + fmtHoras(Math.round(x.semanal)) + ' por semana)').join('; ');
               a = { status: ok ? 'condicao' : 'nao_cumpre', atendida: ok ? true : undefined, instrumento: 'compensacao_media', exige: textoInstrumento(['compensacao_media']), nota: 'cadastrado: ' + bm.instr.nome,
-                porque: ok ? 'Semana de até 42 h fechada pela compensação pela média em norma coletiva: nos ciclos completos que contêm a semana, a média do ciclo da escala é de até ' + fmtHoras(pm) + ', dentro do teto de ' + fmtHoras(limU) + ', e o mês-calendário tem a média de dois repousos por semana. Leitura do escritório.'
-                  : !okH ? 'A norma coletiva de compensação pela média não fecha a semana: no ciclo da escala, a média chega a ' + fmtHoras(pm) + ', acima do teto de ' + fmtHoras(limU) + '. O excedente é hora extra.'
-                  : 'A norma coletiva de compensação pela média não fecha a semana: em ' + mRuim.rot + ', ' + mRuim.rp + ' repousos para ' + mRuim.min + ' exigidos na média de dois por semana. O excedente é hora extra.',
-                base: 'CF, art. 7º, XIII; CLT, art. 611-A, I; leitura do escritório (D108)' };
+                porque: ok ? 'Semana de até 42 h fechada pela compensação pela média em norma coletiva: no mês-calendário, ' + txtH + '.'
+                  : 'A norma coletiva de compensação pela média não fecha a semana: no mês-calendário, ' + hRuim.rot + ' soma ' + fmtHoras(hRuim.tot) + ', acima do limite de ' + fmtHoras(hRuim.lim) + '. O excedente é hora extra.',
+                base: 'CF, art. 7º, XIII; Portaria MTE 2.041/2026, arts. 2º e 3º', valoresMedia: hs };
             } else {
               a = { status: 'nao_cumpre', porque: 'Horas acima de 8 h por dia sem dia útil a compensar na semana: o excedente é hora extra.' + (totU <= 42 * HORA && limU < totU ? ' Só norma coletiva específica de compensação pela média, com a média no teto, fecharia a semana (leitura do escritório).' : ''), base: baseJ1 };
             }
@@ -1362,12 +1353,13 @@ button.cd { cursor: pointer; }
       return { saldo7: saldo7, texto: (partes.length ? partes.join('; ') : 'sem semanas') + ' → saldo ' + (saldo7 > 0 ? '+' : saldo7 < 0 ? '−' : '') + fmtHoras(Math.round(Math.abs(saldo7) / 7)) };
     }
 
-    /* ---------- janelas de 28 dias (liminar na ADI 8.041, D102): com norma coletiva, os repousos se conferem em qualquer
-       período de quatro semanas seguidas, e não mais na semana nem no mês-calendário */
+    /* ---------- janelas de 28 dias (liminar na ADI 8.041, D102): com norma coletiva, os repousos se conferiam em qualquer
+       período de quatro semanas seguidas. Desligadas por padrão desde a Portaria MTE 2.041/2026, que apura a média no
+       mês-calendário (art. 4º, §§ 3º e 4º; D119); ficam só com cfg.janela28 */
     // As janelas começam na vigência dos dois repousos (16/12/2026): antes dela vale a regra de um repouso por semana (R1).
     const NJ = 28, BJ = ctx.janela.b;
     let pRep = null, pExig = null, xv0 = null;
-    if (cfg.liminar !== false) {
+    if (cfg.liminar !== false && cfg.janela28) {
       const n = BJ - A + 1;
       pRep = new Int32Array(n + 1); pExig = new Float64Array(n + 1);
       for (let i = 0; i < n; i++) {
@@ -1425,7 +1417,7 @@ button.cd { cursor: pointer; }
       /* R2 — média do § 2º */
       {
         const falhas = semFalhaR1.filter((p) => p.fim >= ini && p.ini <= fim);
-        const base = 'CF, art. 7º, § 2º (Emenda Constitucional 141/2026 – Fim da 6x1)';
+        const base = 'CF, art. 7º, § 2º (Emenda Constitucional 141/2026 – Fim da 6x1); Portaria MTE 2.041/2026, art. 4º, §§ 1º e 3º';
         const crit = { A: minA, B: minB, C: minC };
         const valores = { repousos: rp, A: minA, B: minB, C: minC, cumpreA: rp >= minA, cumpreB: rp >= minB, cumpreC: rp >= minC };
         const conta = rot + ': ' + rp + ' repousos; mínimo de ' + minA + ' pelo critério A, ' + minB + ' pelo B e ' + minC + ' pelo C' + (dServ < nd ? ' (mês parcial: ' + dServ + ' dias em serviço)' : '') + '.';
@@ -1433,20 +1425,17 @@ button.cd { cursor: pointer; }
         else {
           const b = buscarInstrumento(ctx, emp, ['media_par2'], ini) || buscarInstrumento(ctx, emp, ['media_par2'], fim);
           if (!b || !b.ok) push({ regra: 'R2', periodo: per, status: 'nao_cumpre', porque: 'Há semana com menos de dois repousos e não há norma coletiva com regime de média cadastrada' + (b ? ' válida (' + b.nota + ')' : '') + '.', base: base, conta: conta, valores: valores });
-          else if (cfg.liminar !== false && xv0 != null && fim >= xv0) {
-            // D102 e D109: janelas de 28 dias seguidos e, a pedido do usuário, também o mês-calendário pelo critério adotado
-            const j = piorJanela(ini, fim), okJ = !j || j.folga >= 0, minM = crit[cfg.criterioMedia], okM = rp >= minM, ok = okJ && okM;
-            const txt = j ? j.repousos + ' repousos para ' + j.exigidos + ' exigidos entre ' + fmtDataCurta(j.ini) + ' e ' + fmtData(j.fim) : '';
-            const txtM = 'no mês-calendário, ' + rp + ' repousos para ' + minM + ' exigidos pelo critério ' + cfg.criterioMedia;
-            push({ regra: 'R2', periodo: per, status: ok ? 'cumpre' : 'nao_cumpre', instrumento: 'media_par2', nota: 'cadastrado: ' + b.instr.nome, liminar: true,
-              porque: (ok ? 'Na janela de 28 dias mais apertada que toca o mês, ' + txt + '; ' + txtM + '.' : !okM ? 'Faltam repousos ' + txtM + (okJ ? '' : '; e numa janela de 28 dias, ' + txt) + '.' : 'Faltam repousos numa janela de 28 dias: ' + txt + '.') +
-                ' Pela liminar na ADI 8.041, a norma coletiva define quando os dois repousos são gozados; o simulador confere as janelas de 28 dias e o mês-calendário.',
-              base: 'CF, art. 7º, § 2º; STF, ADI 8.041 MC (12/11/2026), item IV', conta: conta + (j ? ' Janela de 28 dias mais apertada: ' + txt + '.' : ''), valores: Object.assign({ janela: j }, valores) });
-          } else {
-            const min = crit[cfg.criterioMedia];
-            const ok = rp >= min;
+          else {
+            // D119: média de dois repousos por semana no mês-calendário, pelo critério do art. 4º, § 4º, da Portaria MTE
+            // 2.041/2026 (critério A), com ao menos um repouso a cada seis dias seguidos de trabalho (art. 4º, § 3º; ver R3).
+            // As janelas de 28 dias da D102 só entram com cfg.janela28.
+            const min = crit[cfg.criterioMedia], okM = rp >= min;
+            const j = cfg.janela28 && pRep && xv0 != null && fim >= xv0 ? piorJanela(ini, fim) : null, okJ = !j || j.folga >= 0, ok = okM && okJ;
+            const txtM = rp + ' repousos no mês; mínimo de ' + min + ' pelo critério ' + cfg.criterioMedia + (cfg.criterioMedia === 'A' ? ' (o dobro dos dias do mês dividido por sete, arredondado para cima)' : '');
+            const txtJ = j ? j.repousos + ' repousos para ' + j.exigidos + ' exigidos entre ' + fmtDataCurta(j.ini) + ' e ' + fmtData(j.fim) : '';
             push({ regra: 'R2', periodo: per, status: ok ? 'cumpre' : 'nao_cumpre', instrumento: 'media_par2', nota: 'cadastrado: ' + b.instr.nome,
-              porque: rp + ' repousos no mês; mínimo de ' + min + ' pelo critério ' + cfg.criterioMedia + '.', base: base, conta: conta, valores: valores });
+              porque: txtM + '.' + (j ? (okJ ? ' Na janela de 28 dias mais apertada, ' : ' Faltam repousos numa janela de 28 dias: ') + txtJ + '.' : '') + ' A sequência de dias de trabalho sem repouso, de no máximo seis, se confere em R3.',
+              base: 'CF, art. 7º, § 2º; Portaria MTE 2.041/2026, art. 4º, §§ 3º e 4º' + (j ? '; STF, ADI 8.041 MC (12/11/2026), item IV' : ''), conta: conta + (j ? ' Janela de 28 dias mais apertada: ' + txtJ + '.' : ''), valores: j ? Object.assign({ janela: j }, valores) : valores });
           }
         }
       }
@@ -1457,31 +1446,32 @@ button.cd { cursor: pointer; }
         const maior = corridas.filter((c) => c.fim >= ini && c.ini <= fim).reduce((s, c) => Math.max(s, c.n), 0);
         push({ regra: 'R3', periodo: per, status: viol.length ? 'nao_cumpre' : (dServ ? 'cumpre' : 'na'),
           porque: viol.length ? viol.map((c) => c.n + ' dias seguidos de trabalho, de ' + fmtData(c.ini) + ' a ' + fmtData(c.fim)).join('; ') + '. Repouso após o 7º dia é devido em dobro.' : 'Maior sequência no mês: ' + maior + ' dia(s).',
-          base: 'CF, art. 7º, XV e § 2º; OJ 410 da SDI-1 do TST', conta: '', valores: { maior: maior, sequencias: viol.map((c) => ({ ini: c.ini, fim: c.fim, n: c.n })) } });
+          base: 'CF, art. 7º, XV e § 2º; Portaria MTE 2.041/2026, art. 4º, § 3º; OJ 410 da SDI-1 do TST', conta: '', valores: { maior: maior, sequencias: viol.map((c) => ({ ini: c.ini, fim: c.fim, n: c.n })) } });
       }
 
       /* R4 — repouso no domingo (comércio: a cada três semanas; art. 386: quinzenal, também no comércio — TST, SDI-1,
-         E-ED-RR-619-11.2017.5.12.0054; D83) */
+         E-ED-RR-619-11.2017.5.12.0054; D83). D119: fora do comércio, a Portaria MTE 2.041/2026 (art. 5º, § 5º) pede o domingo
+         preferencialmente a cada quatro semanas: a falta vira alerta (status 'info'), não descumprimento. */
       {
-        const janelaSem = emp.art386 ? 2 : ctx.comercio ? 3 : 0;
+        const pref = !emp.art386 && !ctx.comercio;
+        const janelaSem = emp.art386 ? 2 : ctx.comercio ? 3 : 4;
         const falhas = [];
-        if (janelaSem) {
-          for (let d = ini; d <= fim; d++) {
-            if (diaSemana(d) !== 6) continue;
-            let algumServico = false, ok = false;
-            for (let j = 0; j < janelaSem; j++) {
-              const s = d - 7 * j, r = reg(s);
-              if (!r) continue;
-              if (emServico(r)) algumServico = true;
-              if (RP.rep.has(s) || !emServico(r)) ok = true;
-            }
-            if (algumServico && !ok) falhas.push(d);
+        for (let d = ini; d <= fim; d++) {
+          if (diaSemana(d) !== 6) continue;
+          let algumServico = false, ok = false;
+          for (let j = 0; j < janelaSem; j++) {
+            const s = d - 7 * j, r = reg(s);
+            if (!r) continue;
+            if (emServico(r)) algumServico = true;
+            if (RP.rep.has(s) || !emServico(r)) ok = true;
           }
+          if (algumServico && !ok) falhas.push(d);
         }
-        const base = emp.art386 ? 'CLT, art. 386' : ctx.comercio ? 'Lei 10.101/2000, art. 6º, parágrafo único' : 'CF, art. 7º, XV; CLT, art. 67';
-        push({ regra: 'R4', periodo: per, status: falhas.length ? 'nao_cumpre' : janelaSem ? (dServ ? 'cumpre' : 'na') : 'info',
-          porque: falhas.length ? 'Sem repouso em domingo nas ' + janelaSem + ' semanas encerradas em ' + falhas.map(fmtDataCurta).join(', ') + '.' : domRep + ' repouso(s) em domingo no mês.',
-          base: base, conta: '', valores: { domingos: domRep } });
+        const base = emp.art386 ? 'CLT, art. 386; Portaria MTE 2.041/2026, art. 5º, § 3º' : ctx.comercio ? 'Lei 10.101/2000, art. 6º, parágrafo único; Portaria MTE 2.041/2026, art. 5º, § 4º' : 'CF, art. 7º, XV; CLT, art. 67; Portaria MTE 2.041/2026, art. 5º, § 5º';
+        const txtF = 'Sem repouso em domingo nas ' + janelaSem + ' semanas encerradas em ' + falhas.map(fmtDataCurta).join(', ') + '.';
+        push({ regra: 'R4', periodo: per, status: pref ? 'info' : falhas.length ? 'nao_cumpre' : (dServ ? 'cumpre' : 'na'),
+          porque: falhas.length ? txtF + (pref ? ' Fora do comércio, o repouso deve coincidir com o domingo preferencialmente ao menos uma vez a cada quatro semanas: é recomendação, não exigência.' : '') : domRep + ' repouso(s) em domingo no mês.',
+          base: base, conta: '', valores: { domingos: domRep, alerta: pref && falhas.length > 0, semanasSemDomingo: falhas } });
       }
 
       /* R8 — turno ininterrupto de revezamento */
@@ -1505,13 +1495,14 @@ button.cd { cursor: pointer; }
           else a = { status: 'nao_cumpre', porque: 'Turnos alternados entre o dia e a noite com jornada acima de 8 h.' };
           if (informado) a.porque = 'Revezamento entre turnos com horário noturno informado no cadastro. ' + a.porque;
           if (dispensado(ini) && a.status !== 'cumpre') { a.valores = { statusAvaliado: a.status }; a.status = 'info'; a.porque = 'Art. 8º da Emenda Constitucional 141/2026 (Fim da 6x1): avaliação informativa. ' + a.porque; }
-          push(Object.assign({ regra: 'R8', periodo: per, base: 'CF, art. 7º, XIV; Decreto 13.173/2026, art. 2º; Súmula 423 e OJ 360 da SDI-1 do TST', conta: 'Horários de início no mês: ' + inicios.map(fmtHora).join(', ') + '; maior jornada: ' + fmtHoras(maxDia) + '.' }, a));
+          push(Object.assign({ regra: 'R8', periodo: per, base: 'CF, art. 7º, XIV; Decreto 13.173/2026, art. 2º; Portaria MTE 2.041/2026, art. 7º; Súmula 423 e OJ 360 da SDI-1 do TST', conta: 'Horários de início no mês: ' + inicios.map(fmtHora).join(', ') + '; maior jornada: ' + fmtHoras(maxDia) + '.' }, a));
         }
       }
 
-      /* J7 — atividade insalubre (D113, leitura a validar): todo dia acima de 8 h, inclusive as 8h24 da liminar, depende de
-         licença prévia da autoridade (CLT, art. 60; Súmula 85, VI, do TST) ou de norma coletiva que a dispense (CLT, art.
-         611-A, XIII, e art. 611-B, parágrafo único). A 12x36 fica de fora (art. 60, parágrafo único). */
+      /* J7 — atividade insalubre (D113; D119): todo dia acima de 8 h, inclusive as 8h24 da liminar (leitura a validar), é
+         prorrogação e depende de norma coletiva que a autorize expressamente ou de autorização da chefia de segurança e saúde
+         no trabalho da Inspeção do Trabalho (Portaria MTE 2.041/2026, art. 15, II e III; CLT, arts. 60 e 611-A, XIII). A 12x36
+         fica de fora (art. 15, I; CLT, art. 60, parágrafo único). */
       if (emp.insalubre && !art62) {
         let maxDia = 0, nDias = 0;
         for (let d = ini; d <= fim; d++) {
@@ -1525,8 +1516,9 @@ button.cd { cursor: pointer; }
           const okL = !!(bL && bL.ok), okN = !!(bN && bN.ok);
           const a = { status: 'condicao', atendida: okL || okN, instrumento: okL ? 'licenca_art60' : okN ? 'prorrogacao_insalubre' : 'insalubre',
             exige: textoInstrumento(['licenca_art60', 'prorrogacao_insalubre']), nota: okL ? 'cadastrado: ' + bL.instr.nome : okN ? 'cadastrado: ' + bN.instr.nome : 'não cadastrado',
-            porque: nDias + (nDias === 1 ? ' dia' : ' dias') + ' acima de 8 h em atividade insalubre no mês (maior: ' + fmtHoras(maxDia) + '): depende de licença prévia da autoridade ou de norma coletiva que a dispense.',
-            base: okL ? 'CLT, art. 60' : 'CLT, art. 60; Súmula 85, VI, do TST; CLT, art. 611-A, XIII (leitura do escritório, D113)' };
+            porque: nDias + (nDias === 1 ? ' dia' : ' dias') + ' acima de 8 h em atividade insalubre no mês (maior: ' + fmtHoras(maxDia) + '): depende de norma coletiva que autorize expressamente a prorrogação ou de autorização da Inspeção do Trabalho.' +
+              (!okL && !okN && maxDia <= 8 * HORA + 24 * U ? ' Tratar as 8h24 da liminar como prorrogação é leitura do escritório (D113).' : ''),
+            base: okL ? 'CLT, art. 60; Portaria MTE 2.041/2026, art. 15, III' : okN ? 'CLT, art. 611-A, XIII; Portaria MTE 2.041/2026, art. 15, II' : 'CLT, arts. 60 e 611-A, XIII; Portaria MTE 2.041/2026, art. 15' };
           if (dispensado(ini)) { a.valores = { statusAvaliado: a.status }; a.status = 'info'; a.porque = 'Art. 8º da Emenda Constitucional 141/2026 (Fim da 6x1): avaliação informativa. ' + a.porque; }
           push(Object.assign({ regra: 'J7', periodo: per, conta: '' }, a));
         }
@@ -1537,8 +1529,8 @@ button.cd { cursor: pointer; }
         const b = buscarInstrumento(ctx, emp, ['compensacao_mensal'], ini) || buscarInstrumento(ctx, emp, ['compensacao_mensal'], fim);
         const bMed = buscarInstrumento(ctx, emp, ['compensacao_media'], ini) || buscarInstrumento(ctx, emp, ['compensacao_media'], fim);
         if (b && b.ok && bMed && bMed.ok && !dispensado(ini)) {
-          // D108: com a compensação pela média em norma coletiva, a média se confere no ciclo da escala (J1), não no saldo do mês
-          push({ regra: 'J4', periodo: per, status: 'na', porque: 'Há norma coletiva de compensação pela média: as semanas acima da base se conferem pela média do ciclo da escala (ver J1).', base: 'CF, art. 7º, XIII; CLT, art. 611-A, I' });
+          // D108 e D119: com a compensação pela média em norma coletiva, a média do mês-calendário se confere em J1
+          push({ regra: 'J4', periodo: per, status: 'na', porque: 'Há norma coletiva de compensação pela média: as semanas acima da base se conferem pela média do mês-calendário (ver J1).', base: 'CF, art. 7º, XIII; Portaria MTE 2.041/2026, art. 3º' });
         } else if (b && b.ok && !dispensado(ini)) {
           const sal = saldoSemanas(semanas.filter((x) => x.ini + 3 >= ini && x.ini + 3 <= fim), bNorma);
           const conta = 'Saldo das semanas atribuídas a ' + rot + ' (base semanal ' + (bNorma ? 'pelo teto, há norma do art. 7º ou do § 2º' : cfg.leitura8h24 === 'individual' ? 'pelo teto, leitura alternativa de J1' : 'de 8 h × 5 dias quando vigoram dois repousos' + (cfg.liminar !== false ? ', ou as horas da semana até 42 h na semana de cinco dias de até 8h24 (liminar na ADI 8.041)' : '')) + '): ' + sal.texto +
@@ -1550,7 +1542,7 @@ button.cd { cursor: pointer; }
         }
       }
 
-      /* J6 — 12x36 (D118): apuração no mês-calendário (Decreto 13.173/2026, art. 3º). Média do mês acima do limite semanal
+      /* J6 — 12x36 (D118): apuração no mês-calendário (Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, arts. 3º e 8º). Média do mês acima do limite semanal
          constitucional não invalida a escala: as horas excedentes são compensadas ou pagas como extras, nos termos de
          convenção ou acordo coletivo. A média do ciclo fica como referência. */
       {
@@ -1565,7 +1557,7 @@ button.cd { cursor: pointer; }
           for (const [e, usados] of escs) ciclos.push(Object.assign({ escala: e, usados: usados }, mediaCiclo(e, ctx)));
           const media = ciclos.map((c) => fmtHoras(Math.round(c.totalCiclo * 7 / c.n)) + (c.totalCiclo * 7 % c.n ? ' (aprox.)' : '')).join(', ');
           const exced = Math.max(0, totU - limTeto);
-          const base = 'CLT, art. 59-A; Decreto 13.173/2026, art. 3º';
+          const base = 'CLT, art. 59-A; Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, arts. 3º e 8º';
           const conta = 'Mês-calendário: ' + fmtHoras(totU) + (medidaRel ? ' de relógio' : ' computadas') + ' contra limite de ' + fmtHoras(limTeto) + ' (limite semanal ÷ 7 por dia do mês). Média do ciclo, como referência: ' + media + '.';
           const valores = { mediaCiclo: ciclos.map((c) => ({ escala: c.escala, total: c.totalCiclo, dias: c.n })), totalMes: totU, limiteMes: limTeto, excedente: exced, plantoes: usados12 };
           if (exced <= 0) push({ regra: 'J6', periodo: per, status: 'cumpre', porque: rot + ': ' + fmtHoras(totU) + ' no mês, dentro do limite de ' + fmtHoras(limTeto) + '.', base: base, conta: conta, valores: valores });
@@ -1581,7 +1573,7 @@ button.cd { cursor: pointer; }
       /* R10 — art. 8º */
       if (emp.nivelSuperior) {
         const s = art8Dia(ini);
-        push({ regra: 'R10', periodo: per, status: 'info', porque: s.enquadrado ? 'Enquadrado no art. 8º: ' + s.motivo + '. Dispensa J1 a J6; R1 a R3 continuam.' : 'Não enquadrado no art. 8º: ' + s.motivo + '.', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 8º', conta: '', valores: { enquadrado: s.enquadrado } });
+        push({ regra: 'R10', periodo: per, status: 'info', porque: s.enquadrado ? 'Enquadrado no art. 8º: ' + s.motivo + '. Dispensa J1 a J6; R1 a R3 continuam.' : 'Não enquadrado no art. 8º: ' + s.motivo + '.', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 8º; Portaria MTE 2.041/2026, art. 9º', conta: '', valores: { enquadrado: s.enquadrado } });
       }
 
       /* F1 — início de férias */
@@ -1934,29 +1926,29 @@ button.cd { cursor: pointer; }
   /* ============================================================ metadados */
 
   const REGRAS = {
-    J1: { nome: 'Jornada diária normal de até 8 h', base: 'CF, art. 7º, XIII; Emenda Constitucional 141/2026 (Fim da 6x1), art. 7º' },
+    J1: { nome: 'Jornada diária normal de até 8 h', base: 'CF, art. 7º, XIII; Emenda Constitucional 141/2026 (Fim da 6x1), art. 7º; Portaria MTE 2.041/2026, arts. 2º e 3º' },
     J2: { nome: 'Limite diário absoluto', base: 'CLT, arts. 59 e 59-A' },
     J3: { nome: 'Teto semanal', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 6º' },
     J4: { nome: 'Compensação no mês', base: 'CLT, art. 59, § 6º' },
     J5: { nome: 'Banco de horas', base: 'CLT, art. 59, §§ 2º e 5º' },
-    J6: { nome: 'Escala 12x36', base: 'CLT, art. 59-A; Decreto 13.173/2026, art. 3º' },
-    J7: { nome: 'Prorrogação em atividade insalubre', base: 'CLT, art. 60; CLT, art. 611-A, XIII' },
-    R1: { nome: 'Dois repousos em cada semana', base: 'CF, art. 7º, XV' },
-    R2: { nome: 'Média de dois repousos no mês', base: 'CF, art. 7º, § 2º' },
-    R3: { nome: 'No máximo 6 dias consecutivos de trabalho', base: 'OJ 410 da SDI-1 do TST' },
-    R4: { nome: 'Repouso no domingo', base: 'CF, art. 7º, XV; Lei 10.101/2000, art. 6º; CLT, art. 386' },
+    J6: { nome: 'Escala 12x36', base: 'CLT, art. 59-A; Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, art. 8º' },
+    J7: { nome: 'Prorrogação em atividade insalubre', base: 'CLT, arts. 60 e 611-A, XIII; Portaria MTE 2.041/2026, art. 15' },
+    R1: { nome: 'Dois repousos em cada semana', base: 'CF, art. 7º, XV; Portaria MTE 2.041/2026, art. 4º, §§ 1º e 2º' },
+    R2: { nome: 'Média de dois repousos no mês', base: 'CF, art. 7º, § 2º; Portaria MTE 2.041/2026, art. 4º, §§ 3º e 4º' },
+    R3: { nome: 'No máximo 6 dias consecutivos de trabalho', base: 'Portaria MTE 2.041/2026, art. 4º, § 3º; OJ 410 da SDI-1 do TST' },
+    R4: { nome: 'Repouso no domingo', base: 'CF, art. 7º, XV; Lei 10.101/2000, art. 6º; CLT, art. 386; Portaria MTE 2.041/2026, art. 5º, §§ 3º a 5º' },
     R5: { nome: 'Interjornada de 11 h', base: 'CLT, art. 66' },
     R6: { nome: 'Intervalo intrajornada', base: 'CLT, arts. 71 e 611-A, III' },
     R7: { nome: 'Feriados', base: 'Lei 605/1949, art. 9º; Súmula 146 do TST' },
-    R8: { nome: 'Turno ininterrupto de revezamento', base: 'CF, art. 7º, XIV; Decreto 13.173/2026, art. 2º; Súmula 423 do TST' },
+    R8: { nome: 'Turno ininterrupto de revezamento', base: 'CF, art. 7º, XIV; Decreto 13.173/2026, art. 2º; Portaria MTE 2.041/2026, art. 7º; Súmula 423 do TST' },
     R9: { nome: 'Menores e aprendizes', base: 'CLT, arts. 404, 413 e 432' },
-    R10: { nome: 'Alta remuneração', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 8º' },
+    R10: { nome: 'Alta remuneração', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 8º; Portaria MTE 2.041/2026, art. 9º' },
     R11: { nome: 'Irredutibilidade', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 2º' },
     R12: { nome: 'Excluídos do controle', base: 'CLT, art. 62' },
     R13: { nome: 'Contratos com a administração pública', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 9º' },
     R14: { nome: 'Jornadas especiais', base: 'CLT, arts. 58-A e 224; NR-17, Anexo II' },
     R15: { nome: 'Instrumento coletivo e art. 3º', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 3º' },
-    F1: { nome: 'Início das férias', base: 'CLT, art. 134, § 3º' },
+    F1: { nome: 'Início das férias', base: 'CLT, art. 134, § 3º; Portaria MTE 2.041/2026, art. 4º, § 5º' },
     I1: { nome: 'Porte da empresa', base: 'Emenda Constitucional 141/2026 (Fim da 6x1), art. 5º' },
   };
 
@@ -1991,7 +1983,9 @@ button.cd { cursor: pointer; }
   /* Janelas de avaliação. No rodízio de N semanas cada pessoa ocupa um padrão diferente em cada semana e, em
    * qualquer semana, todos os padrões e todas as passagens de um padrão ao seguinte estão em uso por alguém;
    * por isso duas janelas curtas bastam para verificar o ciclo inteiro em cada etapa. */
-  const JANELA1 = { inicio: '2026-12-14', fim: '2027-02-28' };   // vigência dos dois repousos e do teto de 42 h
+  // vigência dos dois repousos e do teto de 42 h; D119: até 31/03/2027, para a amostra ter dois meses de 31 dias depois do
+  // preâmbulo (janeiro fecha com o 5x2 de 01 a 03/01; março mostra o ciclo puro na média do mês-calendário)
+  const JANELA1 = { inicio: '2026-12-14', fim: '2027-03-31' };
   const JANELA2 = { inicio: '2027-11-01', fim: '2028-01-30' };   // passagem ao teto de 40 h
   const D_ANCORA = M.lerData(JANELA1.inicio);
   const SEMANA_40 = M.lerData('2027-12-13');                      // semana de apuração que contém 16/12/2027
@@ -2421,7 +2415,7 @@ button.cd { cursor: pointer; }
     R4: 'domingo de repouso fora do prazo (a cada três semanas no comércio; folga 1:1 aos domingos para as mulheres)', R5: 'menos de 11 h entre uma jornada e outra', R6: 'intervalo de refeição fora do padrão legal',
     R7: 'feriado trabalhado sem compensação', R8: 'turno de revezamento acima do limite', R9: 'regra de menor ou aprendiz', R14: 'tempo parcial acima de 30 h',
     J1: 'jornada acima de 8 h sem acordo de compensação', J2: 'jornada diária acima de 10 h', J3: 'semana acima do teto constitucional', J4: 'horas acima do teto no saldo do mês',
-    J5: 'banco de horas sem saldo zerado', J6: 'média semanal da 12x36 acima do teto', J7: 'dia acima de 8 h em atividade insalubre sem licença prévia nem norma coletiva',
+    J5: 'banco de horas sem saldo zerado', J6: 'média semanal da 12x36 acima do teto', J7: 'dia acima de 8 h em atividade insalubre sem norma coletiva nem autorização da Inspeção do Trabalho',
   };
   function noEtapa(a, etapa) {
     if (!a.periodo) return false;
@@ -2432,18 +2426,19 @@ button.cd { cursor: pointer; }
   const NEGOCIACAO_DO_INSTRUMENTO = { excesso_12x36: 'x12e', escala_12x36: 'x12', ampliacao_art7: 'art7', media_par2: 'par2', reducao_intervalo: 'intervalo', turno_ininterrupto_8h: 'tii', insalubre: 'insal', prorrogacao_insalubre: 'insal', licenca_art60: 'lic60' };
   const NOME_DEPENDENCIA = { escala_12x36: 'Convenção ou acordo coletivo de 12x36', ampliacao_art7: 'Norma coletiva do art. 7º (jornada diária ampliada na etapa de 42 h)', media_par2: 'Norma coletiva com regime de média de repousos', reducao_intervalo: 'Norma coletiva de redução do intervalo',
     turno_ininterrupto_8h: 'Norma coletiva de turno ininterrupto de revezamento de até 8 h (Súmula 423 do TST)',
-    insalubre: 'Licença prévia da autoridade (CLT, art. 60) ou norma coletiva que a dispense (CLT, art. 611-A, XIII)',
-    excesso_12x36: 'Norma coletiva com compensação ou pagamento das horas da 12x36 acima do limite do mês (Decreto 13.173/2026, art. 3º)',
-    licenca_art60: 'Licença prévia para prorrogação em atividade insalubre (CLT, art. 60)', prorrogacao_insalubre: 'Norma coletiva que dispensa a licença prévia em atividade insalubre (CLT, art. 611-A, XIII)' };
+    insalubre: 'Norma coletiva que autorize expressamente a prorrogação ou autorização da Inspeção do Trabalho, em atividade insalubre (Portaria MTE 2.041/2026, art. 15, II e III)',
+    excesso_12x36: 'Norma coletiva com compensação ou pagamento das horas da 12x36 acima do limite do mês (Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, art. 8º)',
+    licenca_art60: 'Autorização da Inspeção do Trabalho para prorrogação em atividade insalubre (Portaria MTE 2.041/2026, art. 15, III)', prorrogacao_insalubre: 'Norma coletiva que autorize expressamente a prorrogação em atividade insalubre (Portaria MTE 2.041/2026, art. 15, II)' };
   /**
    * Leituras do escritório que sustentam uma conclusão (D113): o grau de certeza da etapa cai para "leitura a validar"
    * quando a conclusão depende de uma delas.
    */
   function leituraDe(a) {
     const b = a.base || '', q = a.porque || '';
-    if (a.regra === 'J7' && a.instrumento !== 'licenca_art60') return 'atividade insalubre: todo dia acima de 8 h e norma coletiva no lugar da licença prévia (D113)';
-    if (/leitura do escritório/i.test(b) || /leitura do escritório/i.test(q)) return a.regra === 'J1' && a.instrumento === 'compensacao_media' ? 'compensação pela média em norma coletiva (D108)' : a.regra === 'J1' ? 'jornada acima de 8 h para distribuir mais de 40 h só com norma coletiva do art. 7º (D16)' : 'leitura do escritório (' + a.regra + ')';
-    if (a.regra === 'R2' && a.instrumento) return 'média de dois repousos por semana no mês-calendário, pelo critério do escritório (D79, D109)';
+    // D119: a norma coletiva e a autorização da Inspeção do Trabalho vêm da Portaria MTE 2.041/2026 (art. 15); fica como leitura
+    // só tratar as 8h24 da liminar como prorrogação
+    if (a.regra === 'J7' && /leitura do escritório/.test(a.porque || '')) return 'atividade insalubre: as 8h24 da liminar tratadas como prorrogação (D113)';
+    if (/leitura do escritório/i.test(b) || /leitura do escritório/i.test(q)) return a.regra === 'J1' && a.instrumento === 'compensacao_media' ? 'compensação pela média em norma coletiva, semanas de até 42 h (D108)' : a.regra === 'J1' ? 'jornada acima de 8 h para distribuir mais de 40 h só com norma coletiva do art. 7º (D16)' : 'leitura do escritório (' + a.regra + ')';
     if (a.regra === 'R4' && b === 'CLT, art. 386') return 'folga 1:1 aos domingos para as mulheres (CLT, art. 386; D83)';
     if (a.instrumento === 'escala_12x36') return '12x36 só com convenção ou acordo coletivo (D39)';
     return null;
@@ -2465,20 +2460,22 @@ button.cd { cursor: pointer; }
   }
   function resumir(res, etapa) {
     let status = 'cumpre', liminar = false, naoLei = false;
-    const motivos = new Map(), depende = new Map(), pendente = new Map(), leituras = new Set(), leiturasNao = new Set(), fund = new Map();
+    const motivos = new Map(), depende = new Map(), pendente = new Map(), leituras = new Set(), leiturasNao = new Set(), fund = new Map(), alertas = new Set();
     for (const e of res.empregados) {
       // regime de média do § 2º (norma coletiva cadastrada): a semana com um repouso só fica atendida pela norma (D79)
       const pelaMedia = semanaPelaMedia(e);
       for (const a of e.achados) {
+      // D119: domingo de folga fora do comércio, preferencialmente a cada quatro semanas (Portaria MTE 2.041/2026, art. 5º, § 5º)
+      if (a.regra === 'R4' && a.status === 'info' && a.valores && a.valores.alerta && noEtapa(a, etapa)) alertas.add('domingo');
       if (!noEtapa(a, etapa) || a.status === 'na' || a.status === 'info') continue;
-      // conclusões que dependem da liminar na ADI 8.041 (dias de até 8h24 sem norma; repousos em janelas de 28 dias)
+      // conclusões que dependem da liminar na ADI 8.041 (dias de até 8h24 sem norma; repousos em janelas de 28 dias, só com cfg.janela28)
       if ((a.status === 'cumpre' || (a.status === 'condicao' && a.atendida)) && (a.liminar || /ADI 8\.041/.test(a.base || ''))) liminar = true;
       if (a.status === 'cumpre') continue;
       const fundo = (st, base, oque) => { const fk = a.regra + '|' + st + '|' + base; if (!fund.has(fk)) fund.set(fk, { regra: a.regra, status: st, base: base, oque: oque || '' }); };
       if (pelaMedia(a)) {
         depende.set('media_par2', NOME_DEPENDENCIA.media_par2); if (status === 'cumpre') status = 'condicao';
-        leituras.add('média de dois repousos por semana no mês-calendário, pelo critério do escritório (D79, D109)');
-        fundo('condicao', 'CF, art. 7º, § 2º', NOME_DEPENDENCIA.media_par2);
+        // D119: o critério da média no mês-calendário é o da Portaria MTE 2.041/2026 (art. 4º, § 4º): deixou de ser leitura
+        fundo('condicao', 'CF, art. 7º, § 2º; Portaria MTE 2.041/2026, art. 4º, §§ 3º e 4º', NOME_DEPENDENCIA.media_par2);
         continue;
       }
       const lt = leituraDe(a);
@@ -2507,7 +2504,7 @@ button.cd { cursor: pointer; }
       // 'liminar' se depende da liminar na ADI 8.041, 'lei' nos demais casos
       // "não adere": firme pela lei quando ao menos uma regra que falha não depende de leitura; nas demais situações, a leitura
       // ou a liminar de que a conclusão depende rebaixa a certeza
-      liminar: status === 'nao_cumpre' ? false : liminar, leituras: Array.from(status === 'nao_cumpre' ? (naoLei ? [] : leiturasNao) : leituras), fundamentos: Array.from(fund.values()),
+      liminar: status === 'nao_cumpre' ? false : liminar, leituras: Array.from(status === 'nao_cumpre' ? (naoLei ? [] : leiturasNao) : leituras), fundamentos: Array.from(fund.values()), alertas: Array.from(alertas),
       certeza: status === 'nao_cumpre' ? (naoLei || !leiturasNao.size ? 'lei' : 'leitura') : leituras.size ? 'leitura' : liminar ? 'liminar' : 'lei',
     };
   }
@@ -2560,7 +2557,7 @@ button.cd { cursor: pointer; }
     J2: 'Limitar a jornada a 10 h por dia',
     J4: 'Zerar no próprio mês as horas acima do teto',
     J5: 'Zerar o saldo do banco de horas no prazo',
-    J7: 'Limitar a 8 h os dias em atividade insalubre ou obter licença prévia (CLT, art. 60) ou norma coletiva que a dispense',
+    J7: 'Limitar a 8 h os dias em atividade insalubre ou obter norma coletiva que autorize expressamente a prorrogação ou autorização da Inspeção do Trabalho (Portaria MTE 2.041/2026, art. 15)',
   };
   /** O que precisa mudar na escala de hoje para cumprir a regra em cada etapa (texto do diagnóstico). */
   function mudancas(e, etapa) {
@@ -2792,14 +2789,14 @@ button.cd { cursor: pointer; }
   const ACORDO_COMP = 'Acordo individual escrito de compensação de jornada (CLT, art. 59, § 6º; Súmula 85, I, do TST)';
   const ROTULO_NEGOCIACAO = {
     art7: 'Convenção ou acordo coletivo que amplie a duração diária para distribuir as 42 h em cinco dias ou menos (Emenda Constitucional 141/2026 – Fim da 6x1, art. 7º)',
-    par2: 'Convenção ou acordo coletivo com regime de média de repousos (CF, art. 7º, § 2º)',
+    par2: 'Convenção ou acordo coletivo com regime de média de repousos no mês-calendário (CF, art. 7º, § 2º; Portaria MTE 2.041/2026, art. 4º, §§ 3º e 4º)',
     intervalo: 'Norma coletiva que reduza o intervalo de refeição a no mínimo 30 min (CLT, art. 611-A, III)',
     x12: 'Convenção ou acordo coletivo que autorize a 12x36 (CLT, art. 59-A). O acordo individual escrito, embora previsto na lei, não assegura a validade da escala',
-    media: 'Convenção ou acordo coletivo de compensação pela média: semanas de até 42 h, com a média do ciclo da escala no teto semanal e dois repousos por semana na média do mês (leitura do escritório)',
-    tii: 'Convenção ou acordo coletivo de turno ininterrupto de revezamento de até 8 h (CF, art. 7º, XIV; Súmula 423 do TST)',
-    insal: 'Convenção ou acordo coletivo que autorize a prorrogação em atividade insalubre sem licença prévia (CLT, art. 611-A, XIII)',
-    lic60: 'Licença prévia da autoridade para prorrogação em atividade insalubre (CLT, art. 60)',
-    x12e: 'Convenção ou acordo coletivo que preveja a compensação ou o pagamento como extras das horas da 12x36 acima do limite do mês-calendário (Decreto 13.173/2026, art. 3º)',
+    media: 'Convenção ou acordo coletivo de compensação pela média: semanas de até 42 h (leitura do escritório), com a média do mês-calendário no teto semanal e dois repousos por semana na média do mês (Portaria MTE 2.041/2026, arts. 3º e 4º)',
+    tii: 'Convenção ou acordo coletivo de turno ininterrupto de revezamento de até 8 h (CF, art. 7º, XIV; Súmula 423 do TST; Portaria MTE 2.041/2026, art. 7º)',
+    insal: 'Convenção ou acordo coletivo que autorize expressamente a prorrogação em atividade insalubre (Portaria MTE 2.041/2026, art. 15, II)',
+    lic60: 'Autorização da chefia de segurança e saúde no trabalho da Inspeção do Trabalho para prorrogação em atividade insalubre (Portaria MTE 2.041/2026, art. 15, III)',
+    x12e: 'Convenção ou acordo coletivo que preveja a compensação ou o pagamento como extras das horas da 12x36 acima do limite do mês-calendário (Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, art. 8º)',
   };
   const AVISO_FERIADOS = 'Os cenários tratam os feriados como dias normais de trabalho. Antes de escalar alguém num feriado, confira a autorização para o trabalho ' +
     'nesse dia (no comércio, convenção coletiva e legislação municipal, Lei 10.101/2000, art. 6º-A; nas demais atividades, conforme o caso, acordo ou convenção coletiva) ' +
@@ -3503,7 +3500,7 @@ button.cd { cursor: pointer; }
                 textoMudanca(h4), avisoFixo(h4), textoFerias(rf4),
                 manter ? 'Dias acima de 8 h, com a semana abaixo de 40 h: basta acordo individual escrito de compensação, porque as horas se redistribuem dentro da própria semana e todas as semanas mantêm os repousos (CLT, art. 59, § 6º; Súmula 85, I, do TST).'
                   : '10 h é o limite diário com compensação (CLT, art. 59, § 2º): não sobra margem para hora extra. Basta acordo individual escrito, porque a compensação ocorre dentro da própria semana.',
-                'Em atividade insalubre, a prorrogação depende de licença prévia (CLT, art. 60), salvo norma coletiva (art. 611-A, XIII).',
+                'Em atividade insalubre, a prorrogação depende de norma coletiva que a autorize expressamente ou de autorização da Inspeção do Trabalho (Portaria MTE 2.041/2026, art. 15).',
                 eqR && eq4.I > eqR.I ? 'Pede ' + pl(eq4.I - eqR.I, 'pessoa', 'pessoas') + ' a mais que o 5x2, porque cada uma trabalha um dia a menos.' : null,
                 eq4.P ? 'Tempo parcial atual em 3 dias.' : null,
                 descreverFolgas(eq4),
@@ -3701,7 +3698,7 @@ button.cd { cursor: pointer; }
             instrumentos: instrumentos(['par2!', 'banco!'], ctx.neg, ctx.turnoUsuario), negociar: ['par2'], horasSemana: Math.round(t46 * media) * g.n, horario: h46,
             ponderacoes: [
               'Semanas de ' + fh(t46 * 4) + ' e de ' + fh(t46 * 6) + (N > 2 ? ', e uma de ' + fh(t46 * 5) : '') + ': ' + fh(t46 * media) + ' por semana em média. A norma coletiva precisa trazer também a compensação das horas entre as semanas (banco de horas, CLT, art. 59, § 2º), como na “semana espanhola”, que o TST admite por norma coletiva (OJ 323 da SDI-1).',
-              N === 2 ? 'Entrega 8 folgas a cada 28 dias. Pelo critério de média adotado (A, a validar), os meses de 30 e 31 dias pedem 9; por isso o simulador testa também o ciclo com uma semana de 5x2.' : 'A semana de 5x2 a cada quatro garante 9 folgas a cada 28 dias.',
+              N === 2 ? 'Entrega 8 folgas a cada 28 dias. Pelo critério da Portaria MTE 2.041/2026 (art. 4º, § 4º), os meses de 30 e 31 dias pedem 9; por isso o simulador testa também o ciclo com uma semana de 5x2.' : 'A semana de 5x2 a cada quatro garante 9 folgas a cada 28 dias.',
               'Por depender da média mensal de repousos, não se faz por acordo individual (CF, art. 7º, § 2º).', textoMudanca(h46), avisoFixo(h46), textoDomingo(ctx),
               ctx.exigeFerias ? 'Quadro dimensionado com 30 dias de férias por pessoa no ano.' : textoFeriasHoje(ctx)],
             semanasGrade: Math.max(4, N), cicloSemanas: N,
@@ -4581,7 +4578,7 @@ button.cd { cursor: pointer; }
     let maxJ = 0;
     for (const l of linhas) for (const h of l.horas) if (h) maxJ = Math.max(maxJ, h[1] - h[0] - (h[2] || []).reduce((s, q) => s + q[1] - q[0], 0));
     return { status: resumo.status, motivos: resumo.motivos, pendente: resumo.pendente, depende: resumo.depende, problemas: problemas, horas: horas, cobertura: cobertura, erros: r.erros.map((x) => x.onde + ': ' + x.msg),
-      liminar: resumo.liminar, leituras: resumo.leituras, fundamentos: resumo.fundamentos, certeza: resumo.certeza, eco: Object.assign(eq, { maxJornada: maxJ }) };
+      liminar: resumo.liminar, leituras: resumo.leituras, fundamentos: resumo.fundamentos, alertas: resumo.alertas, certeza: resumo.certeza, eco: Object.assign(eq, { maxJornada: maxJ }) };
   }
 
   /* "Conferir uma escala" (D114) e casos de referência: uma semana (ou ciclo de semanas) de uma pessoa, informada à mão, no
@@ -4765,14 +4762,14 @@ button.cd { cursor: pointer; }
     ['comp', 'Acordo de compensação de horas no mês, com cada empregado'],
     ['art7', 'Norma coletiva que amplia a jornada diária até dezembro de 2027 (art. 7º da Emenda)'],
     ['par2', 'Norma coletiva com média de duas folgas por semana no mês'],
-    ['media', 'Norma coletiva de compensação pela média (semanas de até 42 h)'],
+    ['media', 'Norma coletiva de compensação pela média do mês (semanas de até 42 h)'],
     ['banco', 'Banco de horas anual em norma coletiva'],
     ['x12', 'Norma coletiva que autoriza a 12x36'],
     ['x12e', 'Norma coletiva com compensação ou pagamento das horas da 12x36 acima do limite do mês (Decreto 13.173/2026, art. 3º)'],
     ['intervalo', 'Norma coletiva que reduz o intervalo de refeição'],
     ['tii', 'Norma coletiva de turno ininterrupto de até 8 h'],
-    ['insal', 'Norma coletiva de prorrogação em atividade insalubre'],
-    ['lic60', 'Licença prévia do art. 60 da CLT (atividade insalubre)'],
+    ['insal', 'Norma coletiva que autoriza expressamente a prorrogação em atividade insalubre'],
+    ['lic60', 'Autorização da Inspeção do Trabalho para prorrogação em atividade insalubre'],
   ];
   const ORDEM = ['hoje', '5x2', '5x2-fixas', '5x2-mulheres', '5x2-art7', '5x2-semana-curta', '5x2-encurtado', 'sem-contratar', 'fechar-dias', '5x2-parcial', 'escalonado',
     '4x2', '4x2-824', '4x2-media', '4x3', '4x3-6x1', '4x3-6x1-ajuste', '6x2', '12x36-usufruido', '12x36-transicao', '12x36-indenizado', '12x36-estendido'];
@@ -4789,7 +4786,7 @@ button.cd { cursor: pointer; }
     R4: 'falta folga aos domingos no prazo (a cada três semanas no comércio; para as mulheres, um domingo sim e outro não)', R5: 'há menos de 11 h de descanso entre um dia de trabalho e outro',
     R6: 'o intervalo de refeição está fora do padrão', R8: 'o revezamento entre turnos com horário noturno passa do limite de horas', R14: 'o tempo parcial passa de 30 h por semana',
     J1: 'a jornada passa de 8 h por dia sem acordo de compensação', J2: 'a jornada passa de 10 h por dia', J3: 'a semana passa do limite de horas', J4: 'sobram horas acima do limite no mês',
-    J6: 'as horas da 12x36 no mês passam do limite', J7: 'há dias acima de 8 h em atividade insalubre sem licença prévia nem norma coletiva',
+    J6: 'as horas da 12x36 no mês passam do limite', J7: 'há dias acima de 8 h em atividade insalubre sem norma coletiva nem autorização da Inspeção do Trabalho',
   };
 
   /** O mesmo problema, dito de uma pessoa (escala ajustada). */
@@ -4798,7 +4795,7 @@ button.cd { cursor: pointer; }
     R4: 'sem folga aos domingos no prazo (três semanas no comércio; um domingo sim e outro não para as mulheres)', R5: 'menos de 11 h de descanso entre uma jornada e outra',
     R6: 'intervalo de refeição fora do padrão', R8: 'revezamento entre turnos com horário noturno acima do limite de horas', R14: 'tempo parcial acima de 30 h na semana',
     J1: 'jornada acima de 8 h sem acordo de compensação', J2: 'jornada acima de 10 h', J3: 'semana acima do limite de horas', J4: 'horas acima do limite no saldo do mês',
-    J6: 'horas da 12x36 no mês acima do limite', J7: 'dia acima de 8 h em atividade insalubre sem licença prévia nem norma coletiva',
+    J6: 'horas da 12x36 no mês acima do limite', J7: 'dia acima de 8 h em atividade insalubre sem norma coletiva nem autorização da Inspeção do Trabalho',
   };
   const num = (v, d) => (v === '' || v == null || !Number.isFinite(Number(v)) ? (d === undefined ? null : d) : Number(v));
   /** Valor em reais digitado no padrão brasileiro ("2.500", "2.500,50", "2500.5"). */
@@ -4919,22 +4916,22 @@ button.cd { cursor: pointer; }
   /** Cláusula de norma coletiva, dita para o RH procurar na convenção da categoria, com a base. */
   function clausula(r) {
     // D118: a cláusula do excedente da 12x36 vem antes da regra geral da 12x36
-    if (/acima do limite do mês/.test(r)) return { texto: 'cláusula de compensação ou pagamento como extras das horas da 12x36 acima do limite do mês', base: 'Decreto 13.173/2026, art. 3º' };
+    if (/acima do limite do mês/.test(r)) return { texto: 'cláusula de compensação ou pagamento como extras das horas da 12x36 acima do limite do mês', base: 'Decreto 13.173/2026, art. 3º; Portaria MTE 2.041/2026, art. 8º' };
     if (/12x36/.test(r)) return { texto: 'cláusula que autorize a 12x36', base: 'CLT, art. 59-A' };
-    if (/compensação pela média/.test(r)) return { texto: 'cláusula de compensação pela média semanal de horas', base: 'CF, art. 7º, XIII; CLT, art. 611-A, I' };
-    if (/média de repousos/.test(r)) return { texto: 'cláusula de média de duas folgas por semana no mês', base: 'CF, art. 7º, § 2º, na redação da Emenda' };
+    if (/compensação pela média/.test(r)) return { texto: 'cláusula de compensação de horas pela média do mês-calendário', base: 'CF, art. 7º, XIII; Portaria MTE 2.041/2026, arts. 2º e 3º' };
+    if (/média de repousos/.test(r)) return { texto: 'cláusula de média de duas folgas por semana no mês-calendário', base: 'CF, art. 7º, § 2º; Portaria MTE 2.041/2026, art. 4º, §§ 3º e 4º' };
     if (/art\. 7º/.test(r) || /duração diária/.test(r)) return { texto: 'cláusula que amplie a jornada diária para distribuir as 42 h em cinco dias ou menos até dezembro de 2027', base: 'Emenda Constitucional 141, art. 7º' };
     if (/intervalo/.test(r)) return { texto: 'cláusula que reduza o intervalo de refeição', base: 'CLT, art. 611-A, III' };
-    if (/turno ininterrupto/.test(r)) return { texto: 'cláusula de turno ininterrupto de revezamento de até 8 h', base: 'CF, art. 7º, XIV; Súmula 423 do TST' };
-    if (/insalubre/.test(r)) return { texto: 'cláusula que dispense a licença prévia para prorrogar a jornada em atividade insalubre', base: 'CLT, art. 611-A, XIII' };
+    if (/turno ininterrupto/.test(r)) return { texto: 'cláusula de turno ininterrupto de revezamento de até 8 h', base: 'CF, art. 7º, XIV; Súmula 423 do TST; Portaria MTE 2.041/2026, art. 7º' };
+    if (/insalubre/.test(r)) return { texto: 'cláusula que autorize expressamente a prorrogação da jornada em atividade insalubre', base: 'CLT, art. 611-A, XIII; Portaria MTE 2.041/2026, art. 15, II' };
     if (/banco de horas anual/i.test(r)) return { texto: 'cláusula de banco de horas anual', base: 'CLT, art. 59, § 2º' };
     return { texto: 'cláusula sobre ' + minusc(semCitacao(r)), base: (/\(([^()]*)\)\s*$/.exec(r) || [])[1] || '' };
   }
   /** Nome simples da norma coletiva de que um cenário depende. */
-  const normaSimples = (r) => (/acima do limite do mês/.test(r) ? 'convenção ou acordo coletivo com compensação ou pagamento das horas da 12x36 acima do limite do mês' : /12x36/.test(r) ? 'convenção ou acordo coletivo que autorize a 12x36' : /compensação pela média/.test(r) ? 'convenção ou acordo coletivo de compensação pela média semanal'
+  const normaSimples = (r) => (/acima do limite do mês/.test(r) ? 'convenção ou acordo coletivo com compensação ou pagamento das horas da 12x36 acima do limite do mês' : /12x36/.test(r) ? 'convenção ou acordo coletivo que autorize a 12x36' : /compensação pela média/.test(r) ? 'convenção ou acordo coletivo de compensação pela média do mês'
     : /média de repousos/.test(r) ? 'convenção ou acordo coletivo com média de duas folgas por semana no mês' : /art\. 7º/.test(r) ? 'convenção ou acordo coletivo que amplie a jornada diária até dezembro de 2027'
     : /intervalo/.test(r) ? 'convenção ou acordo coletivo que reduza o intervalo de refeição' : /turno ininterrupto/.test(r) ? 'convenção ou acordo coletivo de turno ininterrupto de revezamento de até 8 h'
-    : /insalubre/.test(r) ? 'convenção ou acordo coletivo que dispense a licença prévia em atividade insalubre' : minusc(semCitacao(r)));
+    : /insalubre/.test(r) ? 'convenção ou acordo coletivo que autorize expressamente a prorrogação em atividade insalubre' : minusc(semCitacao(r)));
   /**
    * Situação de uma etapa em quatro níveis para o RH: 'ok' (adere sem negociar ou com o que a empresa já tem), 'acordo'
    * (adere com acordo individual com cada empregado, sem sindicato), 'norma' (depende de convenção ou acordo coletivo, ou
@@ -4944,14 +4941,14 @@ button.cd { cursor: pointer; }
     tem = tem || new Set();
     const e = c && c.etapas ? c.etapas[fase] : null;
     if (!e) return { nivel: 'nao', rot: 'Sem conferência', det: '', cert: 'lei', exige: [], fundamentos: [], leituras: [], liminar: false };
-    const base = { cert: e.certeza || 'lei', leituras: e.leituras || [], liminar: !!e.liminar, fundamentos: e.fundamentos || [], exige: [] };
+    const base = { cert: e.certeza || 'lei', leituras: e.leituras || [], liminar: !!e.liminar, fundamentos: e.fundamentos || [], alertas: e.alertas || [], exige: [] };
     const r = (o) => Object.assign(base, o);
     if (e.status === 'cumpre') return r({ nivel: 'ok', rot: 'Adere sem negociar', det: '' });
     if (e.status === 'condicao') {
       const col = nomesColetivos(c), dep = e.depende || [], usa = dep.filter((n) => col.indexOf(n) >= 0), ind = dep.filter((n) => col.indexOf(n) < 0);
       if (usa.length && c.negociar && c.negociar.length) return r({ nivel: 'norma', rot: 'Depende de norma coletiva', det: 'Precisa de ' + juntarE(unicos(c.negociar.map(normaSimples))) + '.', exige: unicos(c.negociar).map((t) => Object.assign({ tipo: 'norma', origem: t }, clausula(t))) });
       // licença ou autorização do Ministério do Trabalho só entra no cenário quando a empresa informa que a tem
-      const atos = ind.filter((n) => /licen[çc]a prévia|autoriza[çc][ãa]o ministerial/i.test(n)), acs = acordosDe(ind.filter((n) => atos.indexOf(n) < 0));
+      const atos = ind.filter((n) => /licen[çc]a prévia|autoriza[çc][ãa]o ministerial|autoriza[çc][ãa]o da inspe[çc][ãa]o/i.test(n)), acs = acordosDe(ind.filter((n) => atos.indexOf(n) < 0));
       const jaTem = acs.length > 0 && tem.has('comp') && acs.every((a) => /compensação de horas no mês/.test(a.texto));
       if (acs.length && !jaTem) return r({ nivel: 'acordo', rot: 'Adere com acordo individual', det: 'Precisa de ' + juntarE(acs.map((a) => a.texto)) + ', assinado com cada empregado.', exige: acs.map((a) => ({ tipo: 'acordo', texto: a.texto, base: a.base })) });
       if (acs.length || atos.length) return r({ nivel: 'ok', rot: 'Adere com o que a empresa já tem', det: 'Usa ' + juntarE(unicos(acs.map((a) => a.texto).concat(atos.map((n) => minusc(semCitacao(n)))))) + '.' });
@@ -4964,8 +4961,8 @@ button.cd { cursor: pointer; }
       const falta = unicos(neg.length ? neg : ps.map((p) => minusc(semCitacao(p.nome))));
       if (!col) { const as = acordosDe(ps.map((p) => p.nome)); return r({ nivel: 'acordo', rot: 'Adere com acordo individual', det: as.length ? 'Precisa de ' + juntarE(as.map((a) => a.texto)) + ', assinado com cada empregado.' : '', exige: as.map((a) => ({ tipo: 'acordo', texto: a.texto, base: a.base })) }); }
       const origem = c.negociar && c.negociar.length ? c.negociar : ps.map((p) => p.nome);
-      return r({ nivel: 'norma', rot: insal ? 'Depende de licença ou norma coletiva' : 'Depende de norma coletiva', det: falta.length ? 'Precisa de ' + juntarE(falta) + '.' : '',
-        exige: insal && !neg.length ? [{ tipo: 'licenca', texto: 'licença prévia ou norma coletiva para atividade insalubre', base: 'CLT, arts. 60 e 611-A, XIII' }] : unicos(origem).map((t) => Object.assign({ tipo: 'norma', origem: t }, clausula(t))) });
+      return r({ nivel: 'norma', rot: insal ? 'Depende de norma coletiva ou de autorização' : 'Depende de norma coletiva', det: falta.length ? 'Precisa de ' + juntarE(falta) + '.' : '',
+        exige: insal && !neg.length ? [{ tipo: 'licenca', texto: 'norma coletiva ou autorização da Inspeção do Trabalho para prorrogar a jornada em atividade insalubre', base: 'Portaria MTE 2.041/2026, art. 15, II e III' }] : unicos(origem).map((t) => Object.assign({ tipo: 'norma', origem: t }, clausula(t))) });
     }
     const ms = unicos((e.motivos || []).map((m) => MOTIVO[m.regra] || m.texto));
     return r({ nivel: 'nao', rot: 'Não adere', det: ms.length ? maiusc(juntarE(ms)) + '.' : '', motivos: ms });
@@ -5040,7 +5037,7 @@ button.cd { cursor: pointer; }
     for (const [fase, s] of [['e1', s1], ['e2', s2]]) for (const x of s.exige || []) { const k = x.tipo + '|' + x.texto; if (!exige.has(k)) exige.set(k, Object.assign({ fase: fase }, x)); }
     for (const x of exige.values()) {
       if (x.tipo === 'acordo') out.push({ tipo: 'acordo', texto: 'Assinar com cada empregado ' + x.texto + ', ' + ate(x.fase) + '. É um acordo individual: não depende do sindicato.', base: x.base || '' });
-      else if (x.tipo === 'licenca') out.push({ tipo: 'norma', texto: 'Pedir ao Ministério do Trabalho a licença prévia para prorrogar a jornada em atividade insalubre, ou negociar com o sindicato norma coletiva que a dispense, ' + ate(x.fase) + '.', base: 'CLT, arts. 60 e 611-A, XIII' });
+      else if (x.tipo === 'licenca') out.push({ tipo: 'norma', texto: 'Negociar com o sindicato norma coletiva que autorize expressamente a prorrogação da jornada em atividade insalubre, ou pedir autorização à chefia de segurança e saúde no trabalho da unidade regional da Inspeção do Trabalho, ' + ate(x.fase) + '.', base: 'Portaria MTE 2.041/2026, art. 15, II e III; CLT, art. 60' });
       else out.push({ tipo: 'norma', texto: 'Conferir se a convenção coletiva da categoria já tem ' + x.texto + '. Se não tiver, negociar com o sindicato dos empregados um acordo coletivo com essa cláusula, ' + ate(x.fase) + '.', base: x.base || '' });
     }
     for (const [fase, s] of [['e1', s1], ['e2', s2]]) if (s.nivel === 'nao') {
@@ -5071,6 +5068,7 @@ button.cd { cursor: pointer; }
     if (f.dias.abre.length) out.push({ tipo: 'dias', texto: 'Passar a funcionar também ' + P._interno.aosDias(f.dias.abre) + '.' });
     if (!f.porDia.mantida) out.push({ tipo: 'operacao', texto: 'Organizar a operação com ' + f.porDia.texto + ' pessoas por dia, em vez de ' + f.porDia.hoje + ' (menos gente ' + (f.porDia.faltaDias.length === diasAbertos(ctx.demanda).length ? 'em todos os dias de funcionamento' : 'em ' + juntarE(f.porDia.faltaDias.map((d) => DIAS_LONGOS[d]))) + ').' });
     if (s1.liminar && s1.nivel !== 'nao') out.push({ tipo: 'risco', texto: 'Até 15/12/2027, esta escala se apoia na liminar do STF na ADI 8.041, que vale até o julgamento de mérito. Se o Plenário não a mantiver, a jornada acima de 8 h volta a depender de convenção ou acordo coletivo: tenha um plano B.' });
+    if ([s1, s2].some((s) => s.nivel !== 'nao' && (s.alertas || []).indexOf('domingo') >= 0)) out.push({ tipo: 'risco', texto: 'Há quem fique quatro semanas seguidas ou mais sem folga no domingo. Fora do comércio, a portaria do Ministério do Trabalho pede o domingo de folga preferencialmente ao menos uma vez a cada quatro semanas: não é exigência, mas convém ajustar o rodízio.', base: 'Portaria MTE 2.041/2026, art. 5º, § 5º' });
     const leit = unicos((s1.cert === 'leitura' ? s1.leituras : []).concat(s2.cert === 'leitura' ? s2.leituras : []).map(limparLeitura));
     if (leit.length) out.push({ tipo: 'risco', texto: 'Antes de implantar, confirme com o escritório: a conclusão depende de leitura jurídica ainda não pacificada (' + juntarE(leit) + ').' });
     return out;
@@ -5097,7 +5095,7 @@ button.cd { cursor: pointer; }
     const s1 = x.etapas.e1, s2 = x.etapas.e2, req = NIVEL[s1.nivel] >= NIVEL[s2.nivel] ? s1.nivel : s2.nivel, h = x.fatos.horario, partes = [];
     if (req === 'acordo') partes.push('com acordo de compensação assinado com cada empregado, sem depender do sindicato');
     if (req === 'norma') {
-      const ex = unicos([].concat(s1.exige || [], s2.exige || []).filter((y) => y.tipo !== 'acordo').map((y) => (y.tipo === 'licenca' ? 'licença prévia ou norma coletiva para atividade insalubre' : 'convenção ou acordo coletivo com ' + y.texto)));
+      const ex = unicos([].concat(s1.exige || [], s2.exige || []).filter((y) => y.tipo !== 'acordo').map((y) => (y.tipo === 'licenca' ? 'norma coletiva ou autorização da Inspeção do Trabalho para atividade insalubre' : 'convenção ou acordo coletivo com ' + y.texto)));
       partes.push('com ' + juntarE(ex));
     }
     if (h.encurta) {
@@ -5657,7 +5655,7 @@ button.cd { cursor: pointer; }
           <label class="campo"><span class="rot">Intervalo de refeição, em minutos</span><input data-ref="intervalo" type="text" inputmode="numeric" value="${esc(r.intervalo)}" placeholder="o mínimo da lei"></label>
           <div class="campo"><span class="rot">Pessoas necessárias em cada dia</span>${vNecessidade()}<small>Em branco, vale o número de pessoas que trabalham hoje em cada dia.</small></div>
           <label class="check"><input type="checkbox" data-ref="horarioFixo"${r.horarioFixo ? ' checked' : ''}><span>O horário de trabalho precisa ficar como está</span></label>
-          <label class="check"><input type="checkbox" data-ref="insalubre"${r.insalubre ? ' checked' : ''}><span>A atividade é insalubre <small>dias acima de 8 h dependem de licença prévia ou de norma coletiva (CLT, arts. 60 e 611-A, XIII)</small></span></label>
+          <label class="check"><input type="checkbox" data-ref="insalubre"${r.insalubre ? ' checked' : ''}><span>A atividade é insalubre <small>dias acima de 8 h dependem de norma coletiva que os autorize ou de autorização da Inspeção do Trabalho (Portaria MTE 2.041/2026, art. 15)</small></span></label>
           <label class="check"><input type="checkbox" data-ref="revezamento"${r.revezamento ? ' checked' : ''}><span>As pessoas giram entre os turnos, inclusive à noite <small>turno ininterrupto de revezamento: até 6 h por dia, ou até 8 h com norma coletiva (CF, art. 7º, XIV)</small></span></label>
           <div class="campo"><span class="rot">Mulheres que trabalham aos domingos</span><div class="mulheres">${mulheres}</div><small>Têm folga a cada duas semanas aos domingos (CLT, art. 386).</small></div>
           <fieldset class="campo"><legend class="rot">Acordos e normas que a empresa já tem</legend>${E.ACORDOS.map(([k, n]) => `<label class="check"><input type="checkbox" data-acordo="${k}"${r.acordos.indexOf(k) >= 0 ? ' checked' : ''}><span>${esc(n)}</span></label>`).join('')}</fieldset>
@@ -5958,10 +5956,10 @@ button.cd { cursor: pointer; }
       ${vBase()}`;
   }
   function baseTxt() {
-    return 'Base normativa: Emenda Constitucional 141/2026 (Fim da 6x1); Decreto 13.173, de 19/11/2026 (turno ininterrupto, 12x36 apurada no mês-calendário e divisores de 210 e 200); CLT e súmulas do TST; e liminar do STF na ADI 8.041 (12/11/2026), em vigor até o julgamento de mérito pelo Plenário (rito convertido em 17/11/2026). A portaria do Ministério do Trabalho prevista no decreto (art. 4º) ainda não foi incorporada. Base conferida até ' + M.BASE_NORMATIVA + '.';
+    return 'Base normativa: Emenda Constitucional 141/2026 (Fim da 6x1); Decreto 13.173, de 19/11/2026 (turno ininterrupto, 12x36 apurada no mês-calendário e divisores de 210 e 200); Portaria MTE 2.041, de 23/11/2026 (médias de horas e de repousos apuradas no mês-calendário, mínimo de repousos do mês pelo dobro dos dias dividido por sete, no máximo seis dias seguidos de trabalho, domingo e atividade insalubre); CLT e súmulas do TST; e liminar do STF na ADI 8.041 (12/11/2026), em vigor até o julgamento de mérito pelo Plenário (rito convertido em 17/11/2026). A portaria anunciada sobre a compensação de repousos por negociação ainda não saiu. Base conferida até ' + M.BASE_NORMATIVA + '.';
   }
   const AVISO = 'Ferramenta de planejamento. O resultado depende das informações preenchidas e não substitui o parecer jurídico sobre o caso concreto. Conclusões marcadas "leitura a validar" dependem de interpretação ainda não pacificada.';
-  const premissasTxt = () => 'Premissas do custo: salário médio informado para todos; encargos de ' + String(S.est.enc.pct).replace('.', ',') + '% sobre a folha; contratações pelo mesmo salário; tempo parcial proporcional às horas; salário-hora pelo divisor de 220 hoje, 210 na etapa de 42 h e 200 na de 40 h, ou menor se a jornada for menor (Decreto 13.173/2026, art. 5º); adicional noturno de 20%; na 12x36, as horas acima do limite pagas como extras com adicional de 50%, pela média da etapa (se a norma coletiva optar pela compensação, o custo cai, mas o plantão encurta); sem benefícios, outras horas extras nem custos de admissão.';
+  const premissasTxt = () => 'Premissas do custo: salário médio informado para todos; encargos de ' + String(S.est.enc.pct).replace('.', ',') + '% sobre a folha; contratações pelo mesmo salário; tempo parcial proporcional às horas; salário-hora pelo divisor de 220 hoje, 210 na etapa de 42 h e 200 na de 40 h, ou menor se a jornada for menor (Decreto 13.173/2026, art. 5º; Portaria MTE 2.041/2026, art. 10); adicional noturno de 20%; na 12x36, as horas acima do limite pagas como extras com adicional de 50%, pela média da etapa (se a norma coletiva optar pela compensação, o custo cai, mas o plantão encurta); sem benefícios, outras horas extras nem custos de admissão.';
   function vBase() {
     return `<section class="base-norm"><p>${esc(baseTxt())}${S.op.ref.semLiminar ? ' <b>Simulação sem a liminar do STF.</b>' : ''}</p><p>${esc(AVISO)}</p><p>${esc(premissasTxt())}</p></section>`;
   }
